@@ -13,7 +13,7 @@ namespace BlockChainAPI.Utilities
                 Message = message,
                 Data = data
             };
-        }
+        } //this method is used for return boolean message that error or not error   
 
     }
 }

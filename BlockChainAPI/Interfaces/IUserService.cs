@@ -7,7 +7,11 @@ namespace BlockChainAPI.Interfaces
     {
         public Task<Response<User>> GetUser(int id);
         public Task<Response<User>> SetUser(User user);
-        public Task<Response<User>> Update_user(User user);
-        public Task<Response<User>> Delete_user(int id);
+        public Task<Response<User>> UpdateUser(User user);
+        public Task<Response<User>> DeleteUser(int id);
+
+        //question for the future
+        //public Task<Response<User>> ValidateUser(string user, string password);
     }
 }
+//Need to add other interfaces for other services (ConfigurationService, MemPoolService)....

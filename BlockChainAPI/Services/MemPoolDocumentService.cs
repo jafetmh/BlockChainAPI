@@ -46,7 +46,7 @@ namespace BlockChainAPI.Services
                 {
                     document.MemPoolID = memPool.Id;
                 }
-                await _context.BulkInsertAsync(documents);
+                await _context.BulkInsertAsync(documents);//library for bulk insert documents
             }
             catch (Exception ex) { 
                 Console.WriteLine(ex.Message);
@@ -55,7 +55,7 @@ namespace BlockChainAPI.Services
         }
 
         //remove document
-        public async Task<Response<MemPoolDocument>> RemoveMemPoolDocument(int documentId)
+        public async Task<Response<MemPoolDocument>> DeleteMemPoolDocument(int documentId)
         {
             var document = await _context.MemPoolDocuments.FindAsync(documentId);
             if (document != null) {
