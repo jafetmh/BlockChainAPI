@@ -6,13 +6,13 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace BlockChain_DB.Migrations
 {
     /// <inheritdoc />
-    public partial class initialization : Migration
+    public partial class init_database : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "systemConfig",
+                name: "system_configs",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -22,11 +22,11 @@ namespace BlockChain_DB.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_systemConfig", x => x.Id);
+                    table.PrimaryKey("PK_system_configs", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Users",
+                name: "users",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -37,7 +37,7 @@ namespace BlockChain_DB.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Users", x => x.Id);
+                    table.PrimaryKey("PK_users", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -52,15 +52,15 @@ namespace BlockChain_DB.Migrations
                 {
                     table.PrimaryKey("PK_chains", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_chains_Users_UserID",
+                        name: "FK_chains_users_UserID",
                         column: x => x.UserID,
-                        principalTable: "Users",
+                        principalTable: "users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "memPools",
+                name: "mempools",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -69,11 +69,11 @@ namespace BlockChain_DB.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_memPools", x => x.Id);
+                    table.PrimaryKey("PK_mempools", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_memPools_Users_UserID",
+                        name: "FK_mempools_users_UserID",
                         column: x => x.UserID,
-                        principalTable: "Users",
+                        principalTable: "users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -103,7 +103,7 @@ namespace BlockChain_DB.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "memPoolsDocument",
+                name: "mempool_documents",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -117,11 +117,11 @@ namespace BlockChain_DB.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_memPoolsDocument", x => x.Id);
+                    table.PrimaryKey("PK_mempool_documents", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_memPoolsDocument_memPools_MemPoolID",
+                        name: "FK_mempool_documents_mempools_MemPoolID",
                         column: x => x.MemPoolID,
-                        principalTable: "memPools",
+                        principalTable: "mempools",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -167,15 +167,15 @@ namespace BlockChain_DB.Migrations
                 column: "BlockID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_memPools_UserID",
-                table: "memPools",
-                column: "UserID",
-                unique: true);
+                name: "IX_mempool_documents_MemPoolID",
+                table: "mempool_documents",
+                column: "MemPoolID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_memPoolsDocument_MemPoolID",
-                table: "memPoolsDocument",
-                column: "MemPoolID");
+                name: "IX_mempools_UserID",
+                table: "mempools",
+                column: "UserID",
+                unique: true);
         }
 
         /// <inheritdoc />
@@ -185,22 +185,22 @@ namespace BlockChain_DB.Migrations
                 name: "documents");
 
             migrationBuilder.DropTable(
-                name: "memPoolsDocument");
+                name: "mempool_documents");
 
             migrationBuilder.DropTable(
-                name: "systemConfig");
+                name: "system_configs");
 
             migrationBuilder.DropTable(
                 name: "blocks");
 
             migrationBuilder.DropTable(
-                name: "memPools");
+                name: "mempools");
 
             migrationBuilder.DropTable(
                 name: "chains");
 
             migrationBuilder.DropTable(
-                name: "Users");
+                name: "users");
         }
     }
 }

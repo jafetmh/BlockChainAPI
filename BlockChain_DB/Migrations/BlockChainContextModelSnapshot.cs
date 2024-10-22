@@ -54,7 +54,7 @@ namespace BlockChain_DB.Migrations
 
                     b.HasIndex("ChainID");
 
-                    b.ToTable("blocks");
+                    b.ToTable("blocks", (string)null);
                 });
 
             modelBuilder.Entity("BlockChain_DB.Chain", b =>
@@ -73,7 +73,7 @@ namespace BlockChain_DB.Migrations
                     b.HasIndex("UserID")
                         .IsUnique();
 
-                    b.ToTable("chains");
+                    b.ToTable("chains", (string)null);
                 });
 
             modelBuilder.Entity("BlockChain_DB.Document", b =>
@@ -109,7 +109,7 @@ namespace BlockChain_DB.Migrations
 
                     b.HasIndex("BlockID");
 
-                    b.ToTable("documents");
+                    b.ToTable("documents", (string)null);
                 });
 
             modelBuilder.Entity("BlockChain_DB.MemPool", b =>
@@ -128,7 +128,7 @@ namespace BlockChain_DB.Migrations
                     b.HasIndex("UserID")
                         .IsUnique();
 
-                    b.ToTable("memPools");
+                    b.ToTable("mempools", (string)null);
                 });
 
             modelBuilder.Entity("BlockChain_DB.MemPoolDocument", b =>
@@ -164,7 +164,7 @@ namespace BlockChain_DB.Migrations
 
                     b.HasIndex("MemPoolID");
 
-                    b.ToTable("memPoolsDocument");
+                    b.ToTable("mempool_documents", (string)null);
                 });
 
             modelBuilder.Entity("BlockChain_DB.SystemConfig", b =>
@@ -185,7 +185,7 @@ namespace BlockChain_DB.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("systemConfig");
+                    b.ToTable("system_configs", (string)null);
                 });
 
             modelBuilder.Entity("BlockChain_DB.User", b =>
@@ -210,7 +210,7 @@ namespace BlockChain_DB.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users");
+                    b.ToTable("users", (string)null);
                 });
 
             modelBuilder.Entity("BlockChain_DB.Block", b =>
