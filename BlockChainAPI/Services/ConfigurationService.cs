@@ -16,12 +16,13 @@ namespace BlockChainAPI.Services
             _context = context;
         }
 
+        //get
         public int GetMaxBlockDocuments()
         {
             var config = _context.SystemConfig.FirstOrDefault(x => x.Key == "MaxBlockDocuments");
             return config != null ? int.Parse(config.Value) : 0;
         }
-
+        //set
         public void SetMaxBlockDocuments(int value) {
             var config = _context.SystemConfig.FirstOrDefault(x => x.Key == "MaxBlockDocuments");
 
@@ -42,7 +43,7 @@ namespace BlockChainAPI.Services
                 _context.SaveChanges();
             }
         }
-
+        //update
         public async Task<Response<SystemConfig>> Update_MaxDocumentPerBlock(SystemConfig sysconfig)
         {
             var config = await _context.SystemConfig.FindAsync(sysconfig.Key); //Ef rastrea los cambios de entidades cargadas desde el contexto

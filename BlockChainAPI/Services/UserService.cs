@@ -7,8 +7,9 @@ using Microsoft.EntityFrameworkCore;
 namespace BlockChainAPI.Services
 {
     public class UserService: IUserService
+        //make a equals methods for others services
     {
-        private readonly BlockChainContext _context;
+        private readonly BlockChainContext _context;//context database (models and tables)
 
         public UserService(BlockChainContext context)
         {
@@ -32,7 +33,7 @@ namespace BlockChainAPI.Services
         }
 
         //update
-        public async Task<Response<User>> Update_user(User user)
+        public async Task<Response<User>> UpdateUser(User user)
         {
             _context.Entry(user).State = EntityState.Modified;
             int row_affected = await _context.SaveChangesAsync();
@@ -41,7 +42,7 @@ namespace BlockChainAPI.Services
         }
 
         // delete
-        public async Task<Response<User>> Delete_user(int id)
+        public async Task<Response<User>> DeleteUser(int id)
         {
             var user = await _context.Users.FindAsync(id);
             if (user != null) {
@@ -49,9 +50,24 @@ namespace BlockChainAPI.Services
                 await _context.SaveChangesAsync();
                 return ResponseResult.CreateResponse(true, "Eliminado con exito", user);
             }
-            return ResponseResult.CreateResponse<User>(false, "No encontrado");
-
+            return ResponseResult.CreateResponse<User>(false, "Usuario no valido");
 
         }
+
+        //validate user
+
+        public async Task<Response<User>> ValidateUser(string user, string password)
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.User == user && u.Password == password);
+            if (user != null) {
+                return ResponseResult.CreateResponse(true, "Usuario valido", user); 
+            }
+            return ResponseResult.CreateResponse<User>(false, "Usuario no valido");
+
+        }
+
+        //they are all consults to database 
+
+
     }
 }

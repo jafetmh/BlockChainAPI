@@ -1,4 +1,5 @@
 ﻿using BlockChain_DB;
+using BlockChainAPI.Interfaces;
 using BlockChainAPI.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -10,7 +11,7 @@ namespace BlockChainAPI.Controllers
     public class MemPoolDocumentController : ControllerBase
     {
 
-        private readonly MemPoolDocumentService _memPoolDocumentService;
+        private readonly IMemPoolDocumentService _memPoolDocumentService;
 
         public MemPoolDocumentController(MemPoolDocumentService memPoolDocumentService)
         {

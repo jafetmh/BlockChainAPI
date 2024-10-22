@@ -7,6 +7,8 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
+//this main equals java
+
 // Add services to the container.
 
 builder.Services.AddControllers();
@@ -14,9 +16,9 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddSingleton<IUserService, UserService>();
+builder.Services.AddSingleton<IUserService, UserService>();// equals java interface and service inyections (for others Iservices)
 
-//Add database context for dependencies ijection
+//Add database context for dependencies ijection in services
 builder.Services.AddDbContext<BlockChainContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("BlockChain_Connection"))
 );
@@ -41,7 +43,7 @@ builder.Services.AddAuthentication("Bearer").AddJwtBearer(options =>
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("ReactPolicy", builder =>
-        builder.WithOrigins("http://localhost:3000")
+        builder.WithOrigins("http://localhost:3000")//React App URL (https)
         .AllowAnyMethod()
         .AllowAnyHeader()
         .AllowCredentials());
@@ -54,7 +56,7 @@ var app = builder.Build();
 {
     var context = scope.ServiceProvider.GetRequiredService<BlockChainContext>();
     context.Database.Migrate();
-}*/
+}first make DB, second run this ...commet*/
 
 
 // Configure the HTTP request pipeline.
