@@ -29,6 +29,6 @@ namespace BlockChain_DB
         [ForeignKey(nameof(ChainID))]
         public virtual Chain Chain { get; set; }
 
-        public virtual ICollection<Document> Documents { get; } = new List<Document>();
+        public virtual ICollection<Document> Documents { get; } = new List<Document>();yugASUYDGUGOYASD
     }
 }
