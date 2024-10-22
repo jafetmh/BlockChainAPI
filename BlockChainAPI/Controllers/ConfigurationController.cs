@@ -9,9 +9,9 @@ namespace BlockChainAPI.Controllers
     [ApiController]
     public class ConfigurationController : ControllerBase
     {
-        private readonly Configuration_Service _service;
+        private readonly ConfigurationService _service;
 
-        public ConfigurationController(Configuration_Service service) {
+        public ConfigurationController(ConfigurationService service) {
             _service = service;
         }
 
@@ -31,8 +31,8 @@ namespace BlockChainAPI.Controllers
         [HttpPut]
         public async Task<ActionResult> UpdateMaxDocConfig([FromBody] SystemConfig sysConfig) { 
             var result = await _service.Update_MaxDocumentPerBlock(sysConfig);
-            if(result.Success) return Ok(result.Success);
-            return StatusCode(500, "Error al actualizar");
+            if(result.Success) return Ok(result.Message);
+            return StatusCode(500, result.Message);
         }
     }
 }

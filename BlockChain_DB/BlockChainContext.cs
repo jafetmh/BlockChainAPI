@@ -25,6 +25,7 @@ namespace BlockChain_DB
             modelBuilder.Entity<MemPool>().ToTable("mempools");
             modelBuilder.Entity<MemPoolDocument>().ToTable("mempool_documents");
             modelBuilder.Entity<SystemConfig>().ToTable("system_configs");
+
         }
     }
 }

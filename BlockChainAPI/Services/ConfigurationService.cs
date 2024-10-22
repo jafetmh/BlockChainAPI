@@ -1,16 +1,17 @@
 ﻿
 using BlockChain_DB;
 using BlockChain_DB.Response;
+using BlockChainAPI.Utilities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace BlockChainAPI.Services
 {
-    public class Configuration_Service
+    public class ConfigurationService
     {
         private readonly BlockChainContext _context;
 
-        public Configuration_Service(BlockChainContext context)
+        public ConfigurationService(BlockChainContext context)
         {
             _context = context;
         }
@@ -31,6 +32,7 @@ namespace BlockChainAPI.Services
             }
             else
             {
+                //if it doesn't exist, create it
                 _context.SystemConfig.Add(new SystemConfig
                 {
                     Key = "MaxBlockDocuments",
@@ -47,7 +49,7 @@ namespace BlockChainAPI.Services
             if (config != null) {
                config.Value = sysconfig.Value;
                await _context.SaveChangesAsync();
-               return ResponseResult.CreateResponse(true, default, config);
+               return ResponseResult.CreateResponse(true, "Actualizado con exito", config);
             }
 
             return ResponseResult.CreateResponse<SystemConfig>(false,"Error al actualizar");

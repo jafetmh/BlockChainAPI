@@ -1,6 +1,6 @@
 ﻿using BlockChain_DB.Response;
 
-namespace BlockChainAPI.Services
+namespace BlockChainAPI.Utilities
 {
     public static class ResponseResult
     {

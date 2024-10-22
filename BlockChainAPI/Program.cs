@@ -1,4 +1,6 @@
 using BlockChain_DB;
+using BlockChainAPI.Interfaces;
+using BlockChainAPI.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
@@ -12,10 +14,14 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddSingleton<IUserService, UserService>();
+
 //Add database context for dependencies ijection
 builder.Services.AddDbContext<BlockChainContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("BlockChain_Connection"))
 );
+
+
 
 //JWT Config
 builder.Services.AddAuthentication("Bearer").AddJwtBearer(options =>
