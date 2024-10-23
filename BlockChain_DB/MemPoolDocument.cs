@@ -27,6 +27,6 @@ namespace BlockChain_DB
         public int MemPoolID { get; set; }
 
         [ForeignKey(nameof(MemPoolID))]
-        public virtual MemPool MemPool { get; set; }
+        public virtual MemPool? MemPool { get; set; }
     }
 }

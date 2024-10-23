@@ -2,11 +2,13 @@
 using BlockChain_DB.DTO;
 using BlockChainAPI.Interfaces;
 using BlockChainAPI.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BlockChainAPI.Controllers
 {
+    //[Authorize]
     [Route("api/[controller]")]//name controller minuscula/id
     [ApiController]
     public class UserController : ControllerBase
@@ -65,7 +67,7 @@ namespace BlockChainAPI.Controllers
                 return Ok(new { User = response.Data, Token = token});
 
             }
-            return BadRequest(response.Message);
+            return NotFound(response.Message);
         }
     }
 }

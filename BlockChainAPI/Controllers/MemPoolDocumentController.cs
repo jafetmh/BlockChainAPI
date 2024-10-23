@@ -23,10 +23,10 @@ namespace BlockChainAPI.Controllers
         public async Task<ActionResult<IEnumerable<MemPoolDocument>>> GetUserMemPoolDocuments(int userId)
         {
             var result = await _memPoolDocumentService.GetUserMempoolDocuments(userId);
-            if (!result.Any()) { 
-                return NoContent();
+            if (result.Any()) {
+                return Ok(result);
             }
-            return Ok(result);
+            return NoContent();
         }
 
         //POST
