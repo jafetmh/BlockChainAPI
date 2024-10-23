@@ -12,8 +12,8 @@ namespace BlockChainAPI.Controllers
     {
         private readonly IConfigurationService _configurationService;
 
-        public ConfigurationController(ConfigurationService service) {
-            _configurationService = service;
+        public ConfigurationController(ConfigurationService configService) {
+            _configurationService = configService;
         }
 
         [HttpGet]
