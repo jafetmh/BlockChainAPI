@@ -1,12 +1,13 @@
 
 using BlockChain_DB;
+using BlockChain_DB.DTO;
 using BlockChain_DB.Response;
 
 namespace BlockChainAPI.Interfaces
 {
     public interface IMemPoolDocumentService
     {
-        public Task<List<MemPoolDocument>> GetUserMempoolDocuments(int userId);
+        public Task<List<MemPoolDocumentDTO>> GetUserMempoolDocuments(int userId);
         public Task AddMemPoolDocuments(int userId, List<MemPoolDocument> documents);
         public Task<Response<MemPoolDocument>> DeleteMemPoolDocument(int documentId);
 

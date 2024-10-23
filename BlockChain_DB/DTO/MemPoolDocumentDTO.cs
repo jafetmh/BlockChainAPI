@@ -8,6 +8,7 @@ namespace BlockChain_DB.DTO
 {
     public class MemPoolDocumentDTO
     {
+        public int? Id { get; set; }
         public string Owner { get; set; }
 
         public string FileType { get; set; }

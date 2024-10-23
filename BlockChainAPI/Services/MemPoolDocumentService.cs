@@ -1,4 +1,5 @@
 ﻿using BlockChain_DB;
+using BlockChain_DB.DTO;
 using BlockChain_DB.Response;
 using BlockChainAPI.Interfaces;
 using BlockChainAPI.Utilities;
@@ -18,13 +19,39 @@ namespace BlockChainAPI.Services
         }
 
         // get
-        public async Task<List<MemPoolDocument>> GetUserMempoolDocuments(int userId)
+        public async Task<List<MemPoolDocumentDTO>> GetUserMempoolDocuments(int userId)
         {
-            var memPool = await _context.MemPools
-                            .Include(mp =>mp.Documents)
-                            .FirstOrDefaultAsync(mp => mp.UserID == userId);
 
-            return memPool?.Documents.ToList()?? new List<MemPoolDocument>();
+            List<MemPoolDocumentDTO> documents = new List<MemPoolDocumentDTO>();
+            try
+            {
+                var memPool = await _context.MemPools
+                           .Include(mp => mp.Documents)
+                           .FirstOrDefaultAsync(mp => mp.UserID == userId);
+
+                if (memPool != null)
+                {
+
+                    documents = memPool.Documents
+                        .Select(doc => new MemPoolDocumentDTO
+                        {
+                            Id = doc.Id,
+                            Owner = doc.Owner,
+                            FileType = doc.FileType,
+                            CreationDate = doc.CreationDate,
+                            Size = doc.Size,
+                            Doc_encode = doc.Doc_encode,
+                        }).ToList();
+
+                    return documents;
+                }
+                return documents;
+            }
+            catch
+            {
+                Console.WriteLine("Error al obtner documentos");
+                return documents;
+            }
         }
 
         //add bulk of documents 
