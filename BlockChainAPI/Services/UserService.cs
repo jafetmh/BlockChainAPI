@@ -55,15 +55,19 @@ namespace BlockChainAPI.Services
         }
 
         //validate user
-
-        public async Task<Response<User>> ValidateUser(string user, string password)
+        public async Task<Response<User>> ValidateUser(string email, string password)
         {
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.User == user && u.Password == password);
-            if (user != null) {
-                return ResponseResult.CreateResponse(true, "Usuario valido", user); 
-            }
-            return ResponseResult.CreateResponse<User>(false, "Usuario no valido");
+            // Usamos las propiedades 'Email' y 'Password' del modelo User
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == email && u.Password == password);
 
+            if (user != null)
+            {
+                // Usuario válido, devolvemos una respuesta con éxito
+                return ResponseResult.CreateResponse(true, "Usuario válido", user);
+            }
+
+            // Usuario no encontrado o credenciales incorrectas
+            return ResponseResult.CreateResponse<User>(false, "Usuario no válido");
         }
 
         //they are all consults to database 

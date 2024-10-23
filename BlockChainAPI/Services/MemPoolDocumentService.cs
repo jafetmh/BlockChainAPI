@@ -1,12 +1,13 @@
 ﻿using BlockChain_DB;
 using BlockChain_DB.Response;
+using BlockChainAPI.Interfaces;
 using BlockChainAPI.Utilities;
 using EFCore.BulkExtensions;
 using Microsoft.EntityFrameworkCore;
 
 namespace BlockChainAPI.Services
 {
-    public class MemPoolDocumentService
+    public class MemPoolDocumentService: IMemPoolDocumentService
     {
 
         private readonly BlockChainContext _context;

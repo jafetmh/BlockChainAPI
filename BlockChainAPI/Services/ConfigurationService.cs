@@ -1,15 +1,17 @@
 ﻿
 using BlockChain_DB;
 using BlockChain_DB.Response;
+using BlockChainAPI.Interfaces;
 using BlockChainAPI.Utilities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace BlockChainAPI.Services
 {
-    public class ConfigurationService
+    public class ConfigurationService: IConfigurationService
     {
         private readonly BlockChainContext _context;
+
 
         public ConfigurationService(BlockChainContext context)
         {
@@ -44,7 +46,7 @@ namespace BlockChainAPI.Services
             }
         }
         //update
-        public async Task<Response<SystemConfig>> Update_MaxDocumentPerBlock(SystemConfig sysconfig)
+        public async Task<Response<SystemConfig>> UpdateMaxDocumentPerBlock(SystemConfig sysconfig)
         {
             var config = await _context.SystemConfig.FindAsync(sysconfig.Key); //Ef rastrea los cambios de entidades cargadas desde el contexto
             if (config != null) {

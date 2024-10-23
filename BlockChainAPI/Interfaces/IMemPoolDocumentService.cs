@@ -1,5 +1,6 @@
-using BlockChain_BD;
-using BlockChain_BD.Response;
+
+using BlockChain_DB;
+using BlockChain_DB.Response;
 
 namespace BlockChainAPI.Interfaces
 {
