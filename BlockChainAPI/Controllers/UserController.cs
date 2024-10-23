@@ -12,9 +12,9 @@ namespace BlockChainAPI.Controllers
     {
         private readonly IUserService _userService;//change UserService to IUserService and the other controllers
 
-        public UserController(UserService user_service)
+        public UserController(UserService userService)
         {
-            _userService = user_service;
+            _userService = userService;
         }
 
         [HttpGet("{id}")]

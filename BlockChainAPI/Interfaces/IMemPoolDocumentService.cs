@@ -9,7 +9,7 @@ namespace BlockChainAPI.Interfaces
         public Task AddMemPoolDocuments(int userId, List<MemPoolDocument> documents);
         public Task<Response<MemPoolDocument>> DeleteMemPoolDocument(int documentId);
 
-        //question for the future
+        //question for the futur
         //public Task<Response<MemPoolDocument>> UpdateMemPoolDocument(int documentId, MemPoolDocument document);
         //public Task<Response<MemPoolDocument>> GetMemPoolDocument(int documentId);
     }
