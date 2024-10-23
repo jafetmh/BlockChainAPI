@@ -1,6 +1,7 @@
 using BlockChain_DB;
 using BlockChainAPI.Interfaces;
 using BlockChainAPI.Services;
+using BlockChainAPI.Services.Auth;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
@@ -16,12 +17,13 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddScoped<IUserService, UserService>();// equals java interface and service inyections (for others Iservices)
-builder.Services.AddScoped<IMemPoolDocumentService, MemPoolDocumentService>();// equals java interface and service inyections (for others Iservices)
-builder.Services.AddScoped<IConfigurationService, ConfigurationService>();// equals java interface and service inyections (for others Iservices)
-//builder.Services.AddSingleton<IUserService, UserService>();// equals java interface and service inyections (for others Iservices)
+//service inyections
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IMemPoolDocumentService, MemPoolDocumentService>();
+builder.Services.AddScoped<IConfigurationService, ConfigurationService>();
+builder.Services.AddTransient<IAuthService, AuthService>();
 
-//Add database context for dependencies ijection in services
+//Add database context for dependencies ijection
 builder.Services.AddDbContext<BlockChainContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("BlockChain_Connection"))
 );
@@ -55,11 +57,11 @@ builder.Services.AddCors(options =>
 var app = builder.Build();
 
 //Create DB on start this proyect
-/*using (var scope = app.Services.CreateScope())
+using (var scope = app.Services.CreateScope())
 {
     var context = scope.ServiceProvider.GetRequiredService<BlockChainContext>();
     context.Database.Migrate();
-}/*first make DB, second run this ...commet*/
+}
 
 
 // Configure the HTTP request pipeline.
