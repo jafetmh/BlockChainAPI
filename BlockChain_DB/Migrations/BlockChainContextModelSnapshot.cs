@@ -196,7 +196,14 @@ namespace BlockChain_DB.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<DateTime>("DateOfBirth")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LastName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -205,6 +212,10 @@ namespace BlockChain_DB.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Password")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserN")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -285,11 +296,9 @@ namespace BlockChain_DB.Migrations
 
             modelBuilder.Entity("BlockChain_DB.User", b =>
                 {
-                    b.Navigation("Chain")
-                        .IsRequired();
+                    b.Navigation("Chain");
 
-                    b.Navigation("MemPool")
-                        .IsRequired();
+                    b.Navigation("MemPool");
                 });
 #pragma warning restore 612, 618
         }

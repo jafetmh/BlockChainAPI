@@ -1,4 +1,5 @@
 ﻿using BlockChain_DB;
+using BlockChain_DB.DTO;
 using BlockChainAPI.Interfaces;
 using BlockChainAPI.Services;
 using Microsoft.AspNetCore.Http;
@@ -10,11 +11,13 @@ namespace BlockChainAPI.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        private readonly IUserService _userService;//change UserService to IUserService and the other controllers
+        private readonly IAuthService _authService;
+        private readonly IUserService _userService;
 
-        public UserController(IUserService userService)
+        public UserController(IUserService userService, IAuthService authService)
         {
             _userService = userService;
+            _authService = authService;
         }
 
         [HttpGet("{id}")]
@@ -50,18 +53,19 @@ namespace BlockChainAPI.Controllers
         }
 
 
-        //call method validate user
-        [HttpPost("validate")]
-        public async Task<ActionResult> ValidateUser([FromBody] User user)
+        //login
+        [HttpPost("login")]
+        public async Task<ActionResult> Login([FromBody] UserDTO user)
         {
-            var response = await _userService.ValidateUser(user.Email, user.Password);
+            var response = await _userService.Login(user.Email, user.Password);
             if (response.Success) {
-                //token
-                return Ok(response.Data);
+                //Get Token
+                var token = _authService.GenerateToken(response.Data);
+
+                return Ok(new { User = response.Data, Token = token});
 
             }
-                return BadRequest(response.Message);
+            return BadRequest(response.Message);
         }
-        //add method post recibe parameter user and password and compare with database
     }
 }

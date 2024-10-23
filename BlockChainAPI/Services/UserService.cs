@@ -1,4 +1,5 @@
 ﻿using BlockChain_DB;
+using BlockChain_DB.DTO;
 using BlockChain_DB.Response;
 using BlockChainAPI.Interfaces;
 using BlockChainAPI.Utilities;
@@ -27,7 +28,15 @@ namespace BlockChainAPI.Services
         //Set/Post
         public async Task<Response<User>> SetUser(User user)
         {  
-            _context.Users.Add(user);
+            _context.Users.Add(new User
+            {
+                UserN = user.UserN,
+                Name = user.Name,
+                LastName = user.LastName,
+                Email = user.Email,
+                DateOfBirth = user.DateOfBirth,
+                Password = user.Password,
+            });
             await _context.SaveChangesAsync();
             return ResponseResult.CreateResponse<User>(true, "Se creo con exito");           
         }
@@ -35,7 +44,17 @@ namespace BlockChainAPI.Services
         //update
         public async Task<Response<User>> UpdateUser(User user)
         {
-            _context.Entry(user).State = EntityState.Modified;
+            var updatedUser = new User
+            {
+                Id = user.Id,
+                UserN = user.UserN,
+                Name = user.Name,
+                LastName = user.LastName,
+                Email = user.Email,
+                DateOfBirth = user.DateOfBirth,
+                Password = user.Password,
+            };
+            _context.Entry(updatedUser).State = EntityState.Modified;
             int row_affected = await _context.SaveChangesAsync();
             if (row_affected > 0) { return ResponseResult.CreateResponse<User>(true, "Se actualizo correctamente"); }
             return ResponseResult.CreateResponse<User>(false, "No se realizaron cambios");
@@ -55,7 +74,7 @@ namespace BlockChainAPI.Services
         }
 
         //validate user
-        public async Task<Response<User>> ValidateUser(string email, string password)
+        public async Task<Response<User>> Login(string email, string password)
         {
             // Usamos las propiedades 'Email' y 'Password' del modelo User
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == email && u.Password == password);
@@ -65,13 +84,8 @@ namespace BlockChainAPI.Services
                 // Usuario válido, devolvemos una respuesta con éxito
                 return ResponseResult.CreateResponse(true, "Usuario válido", user);
             }
-
             // Usuario no encontrado o credenciales incorrectas
             return ResponseResult.CreateResponse<User>(false, "Usuario no válido");
         }
-
-        //they are all consults to database 
-
-
     }
 }
