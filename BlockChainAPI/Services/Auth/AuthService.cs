@@ -1,23 +1,23 @@
 ﻿using BlockChain_DB;
+using BlockChainAPI.Interfaces;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace BlockChainAPI.Auth
+namespace BlockChainAPI.Services.Auth
 {
-    public class Auth
+    public class AuthService : IAuthService
     {
-        private IConfiguration _configuration;
+        private readonly IConfiguration _configuration;
 
-        public Auth(IConfiguration configuration)
+        public AuthService(IConfiguration configuration)
         {
             _configuration = configuration;
         }
 
-        public string GenerateAuthToken(User user)
+        public string GenerateToken(User user)
         {
-
             var tokenHandler = new JwtSecurityTokenHandler();
             var jwt = _configuration.GetSection("Jwt").Get<Jwt>();
             var byte_key = Encoding.UTF8.GetBytes(jwt.Key);
@@ -41,6 +41,7 @@ namespace BlockChainAPI.Auth
             var token = tokenHandler.CreateToken(tokenDescription);
 
             return tokenHandler.WriteToken(token);
+
         }
     }
 }
