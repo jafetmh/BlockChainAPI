@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BlockChain_DB.Migrations
 {
     [DbContext(typeof(BlockChainContext))]
-    [Migration("20241023165610_initDatabse")]
-    partial class initDatabse
+    [Migration("20241023183946_init")]
+    partial class init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -299,11 +299,9 @@ namespace BlockChain_DB.Migrations
 
             modelBuilder.Entity("BlockChain_DB.User", b =>
                 {
-                    b.Navigation("Chain")
-                        .IsRequired();
+                    b.Navigation("Chain");
 
-                    b.Navigation("MemPool")
-                        .IsRequired();
+                    b.Navigation("MemPool");
                 });
 #pragma warning restore 612, 618
         }

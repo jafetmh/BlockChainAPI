@@ -296,11 +296,9 @@ namespace BlockChain_DB.Migrations
 
             modelBuilder.Entity("BlockChain_DB.User", b =>
                 {
-                    b.Navigation("Chain")
-                        .IsRequired();
+                    b.Navigation("Chain");
 
-                    b.Navigation("MemPool")
-                        .IsRequired();
+                    b.Navigation("MemPool");
                 });
 #pragma warning restore 612, 618
         }

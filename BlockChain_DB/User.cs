@@ -22,8 +22,8 @@ namespace BlockChain_DB
         public DateTime DateOfBirth { get; set; }
         public string Password { get; set; }
 
-        public virtual Chain Chain { get; set; }
+        public virtual Chain? Chain { get; set; }
 
-        public virtual MemPool MemPool { get; set; }
+        public virtual MemPool? MemPool { get; set; }
     }
 }

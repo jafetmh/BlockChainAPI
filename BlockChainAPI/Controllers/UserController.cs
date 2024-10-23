@@ -29,7 +29,7 @@ namespace BlockChainAPI.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> SaveUser([FromBody] UserDTO user)
+        public async Task<ActionResult> SaveUser([FromBody] User user)
         {
             var response = await _userService.SetUser(user);
             if (response.Success) { return Ok(); }
@@ -55,7 +55,7 @@ namespace BlockChainAPI.Controllers
 
         //login
         [HttpPost("login")]
-        public async Task<ActionResult> Login([FromBody] User user)
+        public async Task<ActionResult> Login([FromBody] UserDTO user)
         {
             var response = await _userService.Login(user.Email, user.Password);
             if (response.Success) {

@@ -26,7 +26,7 @@ namespace BlockChainAPI.Services
         }
 
         //Set/Post
-        public async Task<Response<User>> SetUser(UserDTO user)
+        public async Task<Response<User>> SetUser(User user)
         {  
             _context.Users.Add(new User
             {
@@ -44,7 +44,17 @@ namespace BlockChainAPI.Services
         //update
         public async Task<Response<User>> UpdateUser(User user)
         {
-            _context.Entry(user).State = EntityState.Modified;
+            var updatedUser = new User
+            {
+                Id = user.Id,
+                UserN = user.UserN,
+                Name = user.Name,
+                LastName = user.LastName,
+                Email = user.Email,
+                DateOfBirth = user.DateOfBirth,
+                Password = user.Password,
+            };
+            _context.Entry(updatedUser).State = EntityState.Modified;
             int row_affected = await _context.SaveChangesAsync();
             if (row_affected > 0) { return ResponseResult.CreateResponse<User>(true, "Se actualizo correctamente"); }
             return ResponseResult.CreateResponse<User>(false, "No se realizaron cambios");
