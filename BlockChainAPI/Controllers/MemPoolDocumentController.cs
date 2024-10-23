@@ -13,7 +13,7 @@ namespace BlockChainAPI.Controllers
 
         private readonly IMemPoolDocumentService _memPoolDocumentService;
 
-        public MemPoolDocumentController(MemPoolDocumentService memPoolDocumentService)
+        public MemPoolDocumentController(IMemPoolDocumentService memPoolDocumentService)
         {
             _memPoolDocumentService = memPoolDocumentService;
         }
@@ -41,7 +41,7 @@ namespace BlockChainAPI.Controllers
         [HttpDelete("{documentId}")]
         public async Task<ActionResult> DeleteMemPoolDocument(int documentId)
         {
-            var result = await _memPoolDocumentService.RemoveMemPoolDocument(documentId);
+            var result = await _memPoolDocumentService.DeleteMemPoolDocument(documentId);
             if (result.Success) { return Ok(); }
             return BadRequest(result.Message);
         }

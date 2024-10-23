@@ -5,12 +5,11 @@ using BlockChain_DB.Response;
 namespace BlockChainAPI.Interfaces
 {
     public interface IConfigurationService
-    {
-        public Task<Response<Configuration>> GetConfiguration(int id);
-        public Task<Response<Configuration>> SetConfiguration(Configuration configuration);
-        public Task<Response<Configuration>> UpdateConfiguration(Configuration configuration);
 
-        //public Task<Response<Configuration>> DeleteConfiguration(int id);
+    {
+        public int GetMaxBlockDocuments();
+        public void SetMaxBlockDocuments(int value);
+        public Task<Response<SystemConfig>> UpdateMaxDocumentPerBlock(SystemConfig sysconfig);
 
 
 
