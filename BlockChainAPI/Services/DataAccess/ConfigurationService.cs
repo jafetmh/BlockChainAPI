@@ -3,8 +3,6 @@ using BlockChain_DB;
 using BlockChain_DB.Response;
 using BlockChainAPI.Interfaces;
 using BlockChainAPI.Utilities;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace BlockChainAPI.Services
 {

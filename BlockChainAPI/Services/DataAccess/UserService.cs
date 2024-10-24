@@ -1,5 +1,4 @@
 ﻿using BlockChain_DB;
-using BlockChain_DB.DTO;
 using BlockChain_DB.Response;
 using BlockChainAPI.Interfaces;
 using BlockChainAPI.Utilities;
@@ -8,9 +7,8 @@ using Microsoft.EntityFrameworkCore;
 namespace BlockChainAPI.Services
 {
     public class UserService: IUserService
-        //make a equals methods for others services
     {
-        private readonly BlockChainContext _context;//context database (models and tables)
+        private readonly BlockChainContext _context;
 
         public UserService(BlockChainContext context)
         {
@@ -76,15 +74,12 @@ namespace BlockChainAPI.Services
         //validate user
         public async Task<Response<User>> Login(string email, string password)
         {
-            // Usamos las propiedades 'Email' y 'Password' del modelo User
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == email && u.Password == password);
 
             if (user != null)
             {
-                // Usuario válido, devolvemos una respuesta con éxito
                 return ResponseResult.CreateResponse(true, "Usuario válido", user);
             }
-            // Usuario no encontrado o credenciales incorrectas
             return ResponseResult.CreateResponse<User>(false, "Usuario no válido");
         }
     }
