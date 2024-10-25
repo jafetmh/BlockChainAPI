@@ -1,29 +1,35 @@
 ﻿
 using BlockChain_DB;
+using BlockChain_DB.General.Message;
 using BlockChain_DB.Response;
-using BlockChainAPI.Interfaces;
+using BlockChainAPI.Interfaces.IDataService;
 using BlockChainAPI.Utilities;
+using BlockChainAPI.Utilities.ResponseMessage;
 
 namespace BlockChainAPI.Services
 {
     public class ConfigurationService: IConfigurationService
     {
         private readonly BlockChainContext _context;
+        private readonly Message message;
 
 
-        public ConfigurationService(BlockChainContext context)
+        public ConfigurationService(BlockChainContext context, MessageService messages)
         {
             _context = context;
+            message = messages.Get_Message();
         }
 
         //get
-        public int GetMaxBlockDocuments()
+        public Response<SystemConfig> GetMaxBlockDocuments()
         {
             var config = _context.SystemConfig.FirstOrDefault(x => x.Key == "MaxBlockDocuments");
-            return config != null ? int.Parse(config.Value) : 0;
+            if (config != null) { return ResponseResult.CreateResponse(true, message.Success.Get, config); }
+            return ResponseResult.CreateResponse<SystemConfig>(false, message.Failure.Get);
         }
         //set
-        public void SetMaxBlockDocuments(int value) {
+        public Response<SystemConfig> SetMaxBlockDocuments(int value) {
+
             var config = _context.SystemConfig.FirstOrDefault(x => x.Key == "MaxBlockDocuments");
 
             if (config != null)
@@ -33,7 +39,6 @@ namespace BlockChainAPI.Services
             }
             else
             {
-                //if it doesn't exist, create it
                 _context.SystemConfig.Add(new SystemConfig
                 {
                     Key = "MaxBlockDocuments",
@@ -42,6 +47,7 @@ namespace BlockChainAPI.Services
 
                 _context.SaveChanges();
             }
+            return ResponseResult.CreateResponse<SystemConfig>(true, message.Success.Set);
         }
         //update
         public async Task<Response<SystemConfig>> UpdateMaxDocumentPerBlock(SystemConfig sysconfig)
@@ -50,10 +56,10 @@ namespace BlockChainAPI.Services
             if (config != null) {
                config.Value = sysconfig.Value;
                await _context.SaveChangesAsync();
-               return ResponseResult.CreateResponse(true, "Actualizado con exito", config);
+               return ResponseResult.CreateResponse(true, message.Success.Modify, config);
             }
 
-            return ResponseResult.CreateResponse<SystemConfig>(false,"Error al actualizar");
+            return ResponseResult.CreateResponse<SystemConfig>(false, message.Failure.Modify);
             
         }
     }

@@ -1,5 +1,5 @@
 ﻿using BlockChain_DB;
-using BlockChainAPI.Interfaces;
+using BlockChainAPI.Interfaces.IDataService;
 using BlockChainAPI.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -18,15 +18,17 @@ namespace BlockChainAPI.Controllers
 
         [HttpGet]
         public IActionResult GetMaxNumOfDocuments() {
-            var maxNumOfDocument = _configurationService.GetMaxBlockDocuments();
-            return Ok(maxNumOfDocument);
+            var response = _configurationService.GetMaxBlockDocuments();
+            if (response.Success) { return Ok(response); }
+            return BadRequest(response);
         }
 
         [HttpPost("{value}")]
         public IActionResult SetMaxNumOfDocuments( int value)
         {
-            _configurationService.SetMaxBlockDocuments(value);
-            return Ok();
+            var response =_configurationService.SetMaxBlockDocuments(value);
+            if(response.Success) { return Ok( response); }
+            return StatusCode(500, response);
         }
 
         [HttpPut]

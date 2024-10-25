@@ -1,7 +1,7 @@
 ﻿using BlockChain_DB;
 using BlockChain_DB.Response;
 
-namespace BlockChainAPI.Interfaces
+namespace BlockChainAPI.Interfaces.IDataService
 {
     public interface IUserService
     {

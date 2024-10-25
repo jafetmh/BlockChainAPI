@@ -1,6 +1,6 @@
 ﻿using BlockChain_DB;
 
-namespace BlockChainAPI.Interfaces
+namespace BlockChainAPI.Interfaces.IDataService
 {
     public interface IAuthService
     {

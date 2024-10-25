@@ -1,0 +1,15 @@
+{
+  "Success": {
+    "Get": "Recuperado correctamente",
+    "Set": "Guardado correctamente",
+    "Modify": "Modificado correctamente",
+    "Remove": "Eliminado con exito"
+  },
+  "Error": {
+    "Get": "Error al obtener",
+    "Set": "Error al guardar",
+    "Modify": "Error al modificar",
+    "Remove": "Error al eliminar"
+  },
+  "NotFound": "No encontrado"
+}

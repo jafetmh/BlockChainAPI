@@ -1,15 +1,12 @@
 ﻿using BlockChain_DB;
 using BlockChain_DB.DTO;
-using BlockChainAPI.Interfaces;
-using BlockChainAPI.Services;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
+using BlockChainAPI.Interfaces.IDataService;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BlockChainAPI.Controllers
 {
     //[Authorize]
-    [Route("api/[controller]")]//name controller minuscula/id
+    [Route("api/[controller]")]
     [ApiController]
     public class UserController : ControllerBase
     {
@@ -34,24 +31,24 @@ namespace BlockChainAPI.Controllers
         public async Task<ActionResult> SaveUser([FromBody] User user)
         {
             var response = await _userService.SetUser(user);
-            if (response.Success) { return Ok(); }
-            return StatusCode(500, response.Message);
+            if (response.Success) { return Ok(response); }
+            return StatusCode(500, response);
         }
 
         [HttpPut]
         public async Task<ActionResult> UpdateUser([FromBody] User user)
         {
             var response = await _userService.UpdateUser(user);
-            if (response.Success) { return Ok(); };
-            return StatusCode(500, response.Message);
+            if (response.Success) { return Ok(response); };
+            return StatusCode(500, response);
         }
 
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteUser(int id)
         {
             var response = await _userService.DeleteUser(id);
-            if (response.Success) { return Ok(response.Message); }
-            return BadRequest(response.Message);
+            if (response.Success) { return Ok(response); }
+            return BadRequest(response);
         }
 
 

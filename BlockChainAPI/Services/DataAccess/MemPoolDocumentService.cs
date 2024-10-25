@@ -1,8 +1,11 @@
 ﻿using BlockChain_DB;
 using BlockChain_DB.DTO;
+using BlockChain_DB.General.Message;
 using BlockChain_DB.Response;
 using BlockChainAPI.Interfaces;
+using BlockChainAPI.Interfaces.IDataService;
 using BlockChainAPI.Utilities;
+using BlockChainAPI.Utilities.ResponseMessage;
 using EFCore.BulkExtensions;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,14 +15,16 @@ namespace BlockChainAPI.Services
     {
 
         private readonly BlockChainContext _context;
+        private readonly Message message;
 
-        public MemPoolDocumentService(BlockChainContext context)
+        public MemPoolDocumentService(BlockChainContext context, MessageService messages)
         {
             _context = context;
+            message = messages.Get_Message();
         }
 
         // get
-        public async Task<List<MemPoolDocumentDTO>> GetUserMempoolDocuments(int userId)
+        public async Task<Response<List<MemPoolDocumentDTO>>> GetUserMempoolDocuments(int userId)
         {
 
             List<MemPoolDocumentDTO> documents = new List<MemPoolDocumentDTO>();
@@ -43,19 +48,18 @@ namespace BlockChainAPI.Services
                             Doc_encode = doc.Doc_encode,
                         }).ToList();
 
-                    return documents;
                 }
-                return documents;
+                return ResponseResult.CreateResponse(true, "Recuperado con exito", documents);
             }
             catch
             {
                 Console.WriteLine("Error al obtner documentos");
-                return documents;
+                return ResponseResult.CreateResponse(true, "Error al recuperar", documents);
             }
         }
 
-        //add bulk of documents 
-        public async Task AddMemPoolDocuments(int userId, List<MemPoolDocument> documents)
+        //bulk create
+        public async Task<Response<MemPoolDocument>> AddMemPoolDocuments(int userId, List<MemPoolDocument> documents)
         {
             try
             {
@@ -74,10 +78,12 @@ namespace BlockChainAPI.Services
                 {
                     document.MemPoolID = memPool.Id;
                 }
-                await _context.BulkInsertAsync(documents);//library for bulk insert documents
+                await _context.BulkInsertAsync(documents);
+                return ResponseResult.CreateResponse<MemPoolDocument>(true, message.Success.Set);
             }
             catch (Exception ex) { 
                 Console.WriteLine(ex.Message);
+                return ResponseResult.CreateResponse<MemPoolDocument>(true, message.Failure.Set);
             }
 
         }
@@ -89,9 +95,9 @@ namespace BlockChainAPI.Services
             if (document != null) {
                 _context.MemPoolDocuments.Remove(document);
                 await _context.SaveChangesAsync();
-                return ResponseResult.CreateResponse(true, "Eliminado correctamente", document);
+                return ResponseResult.CreateResponse(true, message.Success.Remove, document);
             }
-            return ResponseResult.CreateResponse<MemPoolDocument>(false, "No encontrado");
+            return ResponseResult.CreateResponse<MemPoolDocument>(false, message.NotFound);
 
         }
     }

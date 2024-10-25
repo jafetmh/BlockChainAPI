@@ -1,5 +1,6 @@
 ﻿using BlockChain_DB;
-using BlockChainAPI.Interfaces;
+using BlockChain_DB.General;
+using BlockChainAPI.Interfaces.IDataService;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;

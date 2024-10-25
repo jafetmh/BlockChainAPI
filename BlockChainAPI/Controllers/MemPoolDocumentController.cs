@@ -1,5 +1,5 @@
 ﻿using BlockChain_DB;
-using BlockChainAPI.Interfaces;
+using BlockChainAPI.Interfaces.IDataService;
 using BlockChainAPI.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -23,7 +23,7 @@ namespace BlockChainAPI.Controllers
         public async Task<ActionResult<IEnumerable<MemPoolDocument>>> GetUserMemPoolDocuments(int userId)
         {
             var result = await _memPoolDocumentService.GetUserMempoolDocuments(userId);
-            if (result.Any()) {
+            if (result.Data.Count != 0) {
                 return Ok(result);
             }
             return NoContent();
@@ -42,8 +42,8 @@ namespace BlockChainAPI.Controllers
         public async Task<ActionResult> DeleteMemPoolDocument(int documentId)
         {
             var result = await _memPoolDocumentService.DeleteMemPoolDocument(documentId);
-            if (result.Success) { return Ok(); }
-            return BadRequest(result.Message);
+            if (result.Success) { return Ok(result); }
+            return BadRequest(result);
         }
 
     }

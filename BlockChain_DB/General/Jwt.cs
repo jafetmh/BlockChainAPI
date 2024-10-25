@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BlockChain_DB
+namespace BlockChain_DB.General
 {
     public class Jwt
     {
