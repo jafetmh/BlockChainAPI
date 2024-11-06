@@ -100,5 +100,18 @@ namespace BlockChainAPI.Services
             return ResponseResult.CreateResponse<MemPoolDocument>(false, message.NotFound);
 
         }
+
+        public async Task<Response<MemPoolDocument>> BulkDelete(List<MemPoolDocument> documents)
+        {
+            try
+            {
+                await _context.BulkDeleteAsync(documents);
+                return ResponseResult.CreateResponse<MemPoolDocument>(true, message.Success.Set);
+            }
+            catch (Exception ex) {
+                Console.WriteLine(ex.Message);
+                return ResponseResult.CreateResponse<MemPoolDocument>(false, message.Failure.Remove);
+            }
+        }
     }
 }
