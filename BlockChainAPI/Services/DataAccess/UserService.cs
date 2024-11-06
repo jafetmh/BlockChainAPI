@@ -6,6 +6,7 @@ using BlockChainAPI.Interfaces.IDataService;
 using BlockChainAPI.Utilities;
 using BlockChainAPI.Utilities.ResponseMessage;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Cryptography;
 
 namespace BlockChainAPI.Services
 {
@@ -31,13 +32,18 @@ namespace BlockChainAPI.Services
         //Set/Post
         public async Task<Response<User>> SetUser(User user)
         {
+            byte[] salt = new byte[32];
+            using (var rng = RandomNumberGenerator.Create()) { 
+                rng.GetBytes(salt);
+            }
+            user.Salt = salt;
             _context.Users.Add(user);
             int entriesWriten = await _context.SaveChangesAsync();
 
             if (entriesWriten > 0) { return ResponseResult.CreateResponse<User>(true, message.Success.Set); }
             return ResponseResult.CreateResponse<User>(false, message.Failure.Set);
         }
-            //update
+        //update
         public async Task<Response<User>> UpdateUser(User user)
         {
         var updatedUser = new User

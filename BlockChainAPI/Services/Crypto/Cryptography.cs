@@ -9,7 +9,7 @@ namespace BlockChainAPI.Services.Crypto
     {
 
         //Encryptor
-        public async Task<byte[]> Encrypt(string data, byte[] key, byte[] iv)
+        public async Task<string> Encrypt(string data, byte[] key, byte[] iv)
         {
             try
             {
@@ -26,7 +26,7 @@ namespace BlockChainAPI.Services.Crypto
                 await streamWriter.FlushAsync();
                 cryptoStream.FlushFinalBlock();
 
-                return memoryStream.ToArray();
+                return Convert.ToBase64String(memoryStream.ToArray());
 
             }
             catch(Exception exc) { 
@@ -44,8 +44,8 @@ namespace BlockChainAPI.Services.Crypto
                 aes.IV = iv;
 
                 ICryptoTransform decryptor = aes.CreateDecryptor();
-                await using MemoryStream memoryStream = new(data);
-                await using CryptoStream cryptoStream = new(memoryStream, decryptor, CryptoStreamMode.Read);
+                using MemoryStream memoryStream = new(data);
+                using CryptoStream cryptoStream = new(memoryStream, decryptor, CryptoStreamMode.Read);
                 using StreamReader reader = new(cryptoStream);
 
                 return await reader.ReadToEndAsync();

@@ -2,7 +2,6 @@
 using BlockChain_DB.DTO;
 using BlockChain_DB.General.Message;
 using BlockChain_DB.Response;
-using BlockChainAPI.Interfaces;
 using BlockChainAPI.Interfaces.IDataService;
 using BlockChainAPI.Utilities;
 using BlockChainAPI.Utilities.ResponseMessage;
@@ -101,6 +100,22 @@ namespace BlockChainAPI.Services
 
         }
 
+        //bulk delete doc
+        public async Task<Response<MemPoolDocument>> BulkDelete(List<MemPoolDocument> documents)
+        {
+            try
+            {
+                await _context.BulkDeleteAsync(documents);
+                return ResponseResult.CreateResponse<MemPoolDocument>(true, message.Success.Remove);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return ResponseResult.CreateResponse<MemPoolDocument>(false, message.Failure.Remove);
+            }
+        }
+
+        //Delete one doc
         public async Task<Response<MemPoolDocument>> DeleteMemPoolDocument(int userId, int documentId)
         {
             try
