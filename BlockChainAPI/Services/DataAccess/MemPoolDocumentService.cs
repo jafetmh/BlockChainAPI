@@ -49,12 +49,11 @@ namespace BlockChainAPI.Services
                         }).ToList();
 
                 }
-                return ResponseResult.CreateResponse(true, "Recuperado con exito", documents);
+                return ResponseResult.CreateResponse(true, message.Success.Get, documents);
             }
             catch
             {
-                Console.WriteLine("Error al obtner documentos");
-                return ResponseResult.CreateResponse(true, "Error al recuperar", documents);
+                return ResponseResult.CreateResponse(false, message.Failure.Get, documents);
             }
         }
 
@@ -77,6 +76,7 @@ namespace BlockChainAPI.Services
                 foreach (MemPoolDocument document in documents)
                 {
                     document.MemPoolID = memPool.Id;
+                    document.CreationDate = document.CreationDate.AddHours(-6);
                 }
                 await _context.BulkInsertAsync(documents);
                 return ResponseResult.CreateResponse<MemPoolDocument>(true, message.Success.Set);

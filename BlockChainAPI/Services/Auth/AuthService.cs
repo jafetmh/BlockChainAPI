@@ -19,8 +19,8 @@ namespace BlockChainAPI.Services.Auth
 
         public string GenerateToken(User user)
         {
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var jwt = _configuration.GetSection("Jwt").Get<Jwt>();
+            JwtSecurityTokenHandler tokenHandler = new JwtSecurityTokenHandler();
+            Jwt jwt = _configuration.GetSection("Jwt").Get<Jwt>();
             var byte_key = Encoding.UTF8.GetBytes(jwt.Key);
 
             var key = new SymmetricSecurityKey(byte_key);
@@ -28,13 +28,15 @@ namespace BlockChainAPI.Services.Auth
 
             var tokenDescription = new SecurityTokenDescriptor
             {
-                Subject = new ClaimsIdentity(new[]
+                Subject = new ClaimsIdentity(new []
                 {
                     new Claim(ClaimTypes.Name, user.Email),
                     new Claim(JwtRegisteredClaimNames.Sub, jwt.Subject),
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                     new Claim(JwtRegisteredClaimNames.Iat, DateTime.UtcNow.ToString()),
                 }),
+                Issuer = jwt.Issuer,
+                Audience = jwt.Audience,
                 Expires = DateTime.UtcNow.AddDays(1),
                 SigningCredentials = signIn,
             };

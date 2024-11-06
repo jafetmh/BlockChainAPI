@@ -1,24 +1,40 @@
 using BlockChain_DB;
 using BlockChainAPI;
-using BlockChainAPI.Interfaces;
-using BlockChainAPI.Interfaces.IDataService;
-using BlockChainAPI.Services;
 using BlockChainAPI.Services.Auth;
-using BlockChainAPI.Utilities.ResponseMessage;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
-//this main equals java
-
-// Add services to the container.
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+    In = ParameterLocation.Header,
+    Description = "Ingrese el token JWT en formato 'Bearer {token}'",
+    Name = "Authorization",
+    Type = SecuritySchemeType.ApiKey
+    });
+
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement
+        {
+            {
+                new OpenApiSecurityScheme
+                {
+                    Reference = new OpenApiReference
+                    {
+                        Type = ReferenceType.SecurityScheme,
+                        Id = "Bearer"
+                    }
+                },
+                new string[] {}
+            }
+    });
+});
 
 
 //database context dependencie ijection
@@ -63,7 +79,7 @@ if (app.Environment.IsDevelopment())
 app.UseCors("ReactPolicy");
 
 app.UseHttpsRedirection();
-
+app.UseAuthentication();//needed to accept authentication
 app.UseAuthorization();
 
 app.MapControllers();
