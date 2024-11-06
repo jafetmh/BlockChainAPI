@@ -134,20 +134,17 @@ namespace BlockChainAPI.Services
         {
             try
             {
-                // Buscamos el MemPool correspondiente al userId
                 var memPool = await _context.MemPools
                                 .Include(mp => mp.Documents)
                                 .FirstOrDefaultAsync(mp => mp.UserID == userId);
 
                 if (memPool != null)
                 {
-                    // Buscamos el documento en los documentos del MemPool
                     var document = memPool.Documents
                                            .FirstOrDefault(d => d.Id == documentId);
 
                     if (document != null)
                     {
-                        // Creamos el DTO para devolver los datos
                         var documentDto = new MemPoolDocumentDTO
                         {
                             Id = document.Id,
