@@ -100,5 +100,75 @@ namespace BlockChainAPI.Services
             return ResponseResult.CreateResponse<MemPoolDocument>(false, message.NotFound);
 
         }
+
+        public async Task<Response<MemPoolDocument>> DeleteMemPoolDocument(int userId, int documentId)
+        {
+            try
+            {
+                var memPool = await _context.MemPools
+                                    .Include(mp => mp.Documents)
+                                    .FirstOrDefaultAsync(mp => mp.UserID == userId);
+
+                if (memPool == null)
+                {
+                    return ResponseResult.CreateResponse<MemPoolDocument>(false, message.NotFound);
+                }
+
+                var document = memPool.Documents.FirstOrDefault(d => d.Id == documentId);
+                if (document != null)
+                {
+                    _context.MemPoolDocuments.Remove(document);
+                    await _context.SaveChangesAsync();
+                    return ResponseResult.CreateResponse(true, message.Success.Remove, document);
+                }
+                return ResponseResult.CreateResponse<MemPoolDocument>(false, message.NotFound);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return ResponseResult.CreateResponse<MemPoolDocument>(false, message.Failure.Remove);
+            }
+        }
+
+        public async Task<Response<MemPoolDocumentDTO>> GetDocumentById(int userId, int documentId)
+        {
+            try
+            {
+                // Buscamos el MemPool correspondiente al userId
+                var memPool = await _context.MemPools
+                                .Include(mp => mp.Documents)
+                                .FirstOrDefaultAsync(mp => mp.UserID == userId);
+
+                if (memPool != null)
+                {
+                    // Buscamos el documento en los documentos del MemPool
+                    var document = memPool.Documents
+                                           .FirstOrDefault(d => d.Id == documentId);
+
+                    if (document != null)
+                    {
+                        // Creamos el DTO para devolver los datos
+                        var documentDto = new MemPoolDocumentDTO
+                        {
+                            Id = document.Id,
+                            Owner = document.Owner,
+                            FileType = document.FileType,
+                            CreationDate = document.CreationDate,
+                            Size = document.Size,
+                            Doc_encode = document.Doc_encode,
+                        };
+
+                        return ResponseResult.CreateResponse(true, "Documento encontrado", documentDto);
+                    }
+                    return ResponseResult.CreateResponse<MemPoolDocumentDTO>(false, "Documento no encontrado");
+                }
+                return ResponseResult.CreateResponse<MemPoolDocumentDTO>(false, "MemPool no encontrado");
+            }
+            catch (Exception ex)
+            {
+                return ResponseResult.CreateResponse<MemPoolDocumentDTO>(false, "Error al obtener el documento: " + ex.Message);
+            }
+        }
+
     }
 }
