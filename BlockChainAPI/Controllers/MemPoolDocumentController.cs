@@ -1,5 +1,6 @@
 ﻿using BlockChain_DB;
 using BlockChain_DB.Response;
+using BlockChain_DB.DTO;
 using BlockChainAPI.Interfaces.IDataService;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -43,20 +44,40 @@ namespace BlockChainAPI.Controllers
 
         //DELETE
         [Authorize]
-        [HttpDelete("{documentId}")]
-        public async Task<ActionResult> DeleteMemPoolDocument(int documentId)
+        [HttpDelete("{userId}/{documentId}")]
+        public async Task<ActionResult> DeleteMemPoolDocument(int userId, int documentId)
         {
-            var result = await _memPoolDocumentService.DeleteMemPoolDocument(documentId);
+            var result = await _memPoolDocumentService.DeleteMemPoolDocument(userId, documentId);
             if (result.Success) { return Ok(result); }
             return BadRequest(result);
         }
 
-        public async Task<ActionResult> BulkDetele([FromBody] List<MemPoolDocument> documents)
+        [HttpGet("{userId}/{documentId}")]
+        public async Task<ActionResult<MemPoolDocumentDTO>> GetDocumentById(int userId, int documentId)
         {
-            Response<MemPoolDocument> result = await _memPoolDocumentService.BulkDelete(documents);
-            if (result.Success) { return Ok(result); }
-            return StatusCode(500, result);
+            try
+            {
+                // Usamos el servicio para obtener el documento
+                var result = await _memPoolDocumentService.GetDocumentById(userId, documentId);
+
+                // Verificamos si la operación fue exitosa
+                if (result.Success)
+                {
+                    return Ok(result.Data);  // Retornamos el documento encontrado
+                }
+                else
+                {
+                    return NotFound(result.Message);  // Retornamos un mensaje si no se encuentra el documento
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);  // Retornamos error si ocurre alguna excepción
+            }
         }
+
+
+
 
     }
 }
