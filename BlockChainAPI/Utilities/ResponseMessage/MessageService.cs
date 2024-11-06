@@ -5,14 +5,16 @@ namespace BlockChainAPI.Utilities.ResponseMessage
 {
     public class MessageService
     {
-
         public Message Get_Message()
         {
-            string rootPath = @"C:\Users\jafet\Documents\II Ciclo 2024\Info Aplicada\Proyecto\BlockChainAPI\Utilities\ResponseMessage\Message.json";
-            var path = Path.Combine(rootPath);
-            Console.WriteLine(path);
-            string json = File.ReadAllText(path);
+            // Obtener la ruta base del directorio actual de la aplicación
+            string basePath = AppDomain.CurrentDomain.BaseDirectory;
+            string relativePath = Path.Combine(basePath, "Utilities", "ResponseMessage", "Message.json");
+
+            Console.WriteLine(relativePath);
+            string json = File.ReadAllText(relativePath);
             return JsonSerializer.Deserialize<Message>(json);
         }
     }
 }
+
