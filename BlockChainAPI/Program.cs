@@ -62,11 +62,11 @@ builder.Services.AddCors(options =>
 var app = builder.Build();
 
 //Create DB on start this proyect
-//using (var scope = app.Services.CreateScope())
-//{
-//    var context = scope.ServiceProvider.GetRequiredService<BlockChainContext>();
-//    context.Database.Migrate();
-//}
+using (var scope = app.Services.CreateScope())
+{
+    var context = scope.ServiceProvider.GetRequiredService<BlockChainContext>();
+    context.Database.Migrate();
+}
 
 
 // Configure the HTTP request pipeline.
