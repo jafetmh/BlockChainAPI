@@ -42,6 +42,16 @@ namespace BlockChainAPI.Controllers
             return StatusCode(500, result);
         }
 
+        //BULK Delete
+        [Authorize]
+        [HttpDelete("/bulkdelete")]
+        public async Task<ActionResult> BulkDelete([FromBody] List<MemPoolDocument> documents)
+        {
+            Response<MemPoolDocument> result = await _memPoolDocumentService.BulkDelete(documents);
+            if (result.Success) { return Ok(result); }
+            return StatusCode(500, result);
+        }
+
         //DELETE
         [Authorize]
         [HttpDelete("{userId}/{documentId}")]
@@ -53,31 +63,24 @@ namespace BlockChainAPI.Controllers
         }
 
         [HttpGet("{userId}/{documentId}")]
-        public async Task<ActionResult<MemPoolDocumentDTO>> GetDocumentById(int userId, int documentId)
+        public async Task<ActionResult<DocumentDTO>> GetDocumentById(int userId, int documentId)
         {
             try
             {
-                // Usamos el servicio para obtener el documento
                 var result = await _memPoolDocumentService.GetDocumentById(userId, documentId);
 
-                // Verificamos si la operación fue exitosa
                 if (result.Success)
                 {
-                    return Ok(result.Data);  // Retornamos el documento encontrado
+                    return Ok(result.Data);
                 }
-                else
-                {
-                    return NotFound(result.Message);  // Retornamos un mensaje si no se encuentra el documento
-                }
+                return NotFound(result.Message);
+
             }
             catch (Exception ex)
             {
-                return StatusCode(500, ex.Message);  // Retornamos error si ocurre alguna excepción
+                return StatusCode(500, ex.Message);
             }
         }
-
-
-
 
     }
 }

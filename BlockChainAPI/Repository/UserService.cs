@@ -1,16 +1,16 @@
 ﻿using BlockChain_DB;
+using BlockChain_DB.DTO;
 using BlockChain_DB.General.Message;
 using BlockChain_DB.Response;
-using BlockChainAPI.Interfaces;
 using BlockChainAPI.Interfaces.IDataService;
 using BlockChainAPI.Utilities;
 using BlockChainAPI.Utilities.ResponseMessage;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Cryptography;
 
-namespace BlockChainAPI.Services
+namespace BlockChainAPI.Repository
 {
-    public class UserService: IUserService
+    public class UserService : IUserRepository
     {
         private readonly BlockChainContext _context;
         private readonly Message message;
@@ -25,7 +25,8 @@ namespace BlockChainAPI.Services
         public async Task<Response<User>> GetUser(int id)
         {
             var user = await _context.Users.FindAsync(id);
-            if (user != null){ return ResponseResult.CreateResponse(true, message.Success.Get , user); }
+
+            if (user != null) { return ResponseResult.CreateResponse(true, message.Success.Get, user); }
             return ResponseResult.CreateResponse<User>(false, message.NotFound);
         }
 
@@ -33,7 +34,8 @@ namespace BlockChainAPI.Services
         public async Task<Response<User>> SetUser(User user)
         {
             byte[] salt = new byte[32];
-            using (var rng = RandomNumberGenerator.Create()) { 
+            using (var rng = RandomNumberGenerator.Create())
+            {
                 rng.GetBytes(salt);
             }
             user.Salt = salt;
@@ -46,28 +48,29 @@ namespace BlockChainAPI.Services
         //update
         public async Task<Response<User>> UpdateUser(User user)
         {
-        var updatedUser = new User
-        {
-            Id = user.Id,
-            UserN = user.UserN,
-            Name = user.Name,
-            LastName = user.LastName,
-            Email = user.Email,
-            DateOfBirth = user.DateOfBirth,
-            Password = user.Password,
-        };
-        _context.Entry(updatedUser).State = EntityState.Modified;
-        int row_affected = await _context.SaveChangesAsync();
+            var updatedUser = new User
+            {
+                Id = user.Id,
+                UserN = user.UserN,
+                Name = user.Name,
+                LastName = user.LastName,
+                Email = user.Email,
+                DateOfBirth = user.DateOfBirth,
+                Password = user.Password,
+            };
+            _context.Entry(updatedUser).State = EntityState.Modified;
+            int row_affected = await _context.SaveChangesAsync();
 
-        if (row_affected > 0) { return ResponseResult.CreateResponse<User>(true, message.Success.Modify); }
-        return ResponseResult.CreateResponse<User>(false, message.Failure.Modify);
+            if (row_affected > 0) { return ResponseResult.CreateResponse<User>(true, message.Success.Modify); }
+            return ResponseResult.CreateResponse<User>(false, message.Failure.Modify);
         }
 
         // delete
         public async Task<Response<User>> DeleteUser(int id)
         {
             var user = await _context.Users.FindAsync(id);
-            if (user != null) {
+            if (user != null)
+            {
                 _context.Users.Remove(user);
                 await _context.SaveChangesAsync();
                 return ResponseResult.CreateResponse(true, message.Success.Remove, user);
@@ -76,15 +79,23 @@ namespace BlockChainAPI.Services
 
         }
 
-        public async Task<Response<User>> Login(string email, string password)
+        public async Task<Response<UserDTO>> Login(string userName, string password)
         {
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == email && u.Password == password);
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.UserN == userName && u.Password == password);
 
             if (user != null)
             {
-                return ResponseResult.CreateResponse(true, message.Success.Get, user);
+                UserDTO userDTO = new UserDTO
+                {
+                    Id = user.Id,
+                    UserN = user.UserN,
+                    Name = user.Name,
+                    LastName = user.LastName,
+                    Email = user.Email,
+                };
+                return ResponseResult.CreateResponse(true, message.Success.Get, userDTO);
             }
-            return ResponseResult.CreateResponse<User>(false, message.NotFound);
+            return ResponseResult.CreateResponse<UserDTO>(false, message.NotFound);
         }
     }
 }

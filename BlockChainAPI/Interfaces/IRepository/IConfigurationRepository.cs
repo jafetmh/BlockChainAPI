@@ -4,7 +4,7 @@ using BlockChain_DB.Response;
 
 namespace BlockChainAPI.Interfaces.IDataService
 {
-    public interface IConfigurationService
+    public interface IConfigurationRepository
 
     {
         public Response<SystemConfig> GetMaxBlockDocuments();

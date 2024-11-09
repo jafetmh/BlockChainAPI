@@ -7,7 +7,7 @@
   },
   "Error": {
     "Get": "Error al obtener",
-    "Set": "Error al guardar",
+    "Set": "Error al crear",
     "Modify": "Error al modificar",
     "Remove": "Error al eliminar"
   },

@@ -10,9 +10,9 @@ namespace BlockChainAPI.Controllers
     [ApiController]
     public class ConfigurationController : ControllerBase
     {
-        private readonly IConfigurationService _configurationService;
+        private readonly IConfigurationRepository _configurationService;
 
-        public ConfigurationController(IConfigurationService configService) {
+        public ConfigurationController(IConfigurationRepository configService) {
             _configurationService = configService;
         }
 

@@ -18,15 +18,11 @@ namespace BlockChain_DB
 
         public string FileType { get; set; }
 
-        public string FileName { get; set; } 
-
         public DateTime CreationDate { get; set; }
 
         public long Size { get; set; }
 
         public string Doc_encode { get; set; }
-
-        public string Name { get; set; }  
 
         public int BlockID { get; set; }
 

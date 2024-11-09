@@ -1,7 +1,8 @@
 ﻿using BlockChainAPI.Interfaces.IDataService;
 using BlockChainAPI.Services.Auth;
-using BlockChainAPI.Services;
 using BlockChainAPI.Utilities.ResponseMessage;
+using BlockChainAPI.Repository;
+using BlockChainAPI.Interfaces.IServices.IAuth;
 
 namespace BlockChainAPI
 {
@@ -10,9 +11,9 @@ namespace BlockChainAPI
 
         public static IServiceCollection AddCRUDServices(this IServiceCollection services) {
 
-            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IUserRepository, UserService>();
             services.AddScoped<IMemPoolDocumentService, MemPoolDocumentService>();
-            services.AddScoped<IConfigurationService, ConfigurationService>();
+            services.AddScoped<IConfigurationRepository, ConfigurationService>();
             services.AddTransient<IAuthService, AuthService>();
             return services;
         }

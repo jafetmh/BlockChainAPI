@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BlockChain_DB.Migrations
 {
     [DbContext(typeof(BlockChainContext))]
-    [Migration("20241023224050_init")]
+    [Migration("20241107042540_init")]
     partial class init
     {
         /// <inheritdoc />
@@ -97,7 +97,15 @@ namespace BlockChain_DB.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("FileName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("FileType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -217,6 +225,9 @@ namespace BlockChain_DB.Migrations
                     b.Property<string>("Password")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<byte[]>("Salt")
+                        .HasColumnType("varbinary(max)");
 
                     b.Property<string>("UserN")
                         .IsRequired()

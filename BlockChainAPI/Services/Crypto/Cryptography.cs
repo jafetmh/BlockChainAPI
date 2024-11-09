@@ -1,5 +1,5 @@
 ﻿using BlockChain_DB;
-using BlockChainAPI.Interfaces.ICrypto;
+using BlockChainAPI.Interfaces.IServices.ICrypto;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -9,7 +9,7 @@ namespace BlockChainAPI.Services.Crypto
     {
 
         //Encryptor
-        public async Task<string> Encrypt(string data, byte[] key, byte[] iv)
+        public async Task<byte[]> Encrypt(string data, byte[] key, byte[] iv)
         {
             try
             {
@@ -26,7 +26,7 @@ namespace BlockChainAPI.Services.Crypto
                 await streamWriter.FlushAsync();
                 cryptoStream.FlushFinalBlock();
 
-                return Convert.ToBase64String(memoryStream.ToArray());
+                return memoryStream.ToArray();
 
             }
             catch(Exception exc) { 
