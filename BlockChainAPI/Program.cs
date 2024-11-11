@@ -43,8 +43,8 @@ builder.Services.AddDbContext<BlockChainContext>(options =>
 );
 
 //service injection
-builder.Services.AddCRUDServices();
-builder.Services.AddHelperServices();
+builder.Services.AddDataAccesServices();
+builder.Services.AddAppServices();
 
 //JWT Config
 builder.Services.AddJWTConfig(builder.Configuration);

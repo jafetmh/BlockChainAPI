@@ -3,6 +3,7 @@ using BlockChain_DB.DTO;
 using BlockChain_DB.Response;
 using BlockChainAPI.Interfaces;
 using BlockChainAPI.Interfaces.IDataService;
+using BlockChainAPI.Interfaces.IServices.IAppServices;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Server.IIS;
 using System.Threading.Tasks;
@@ -13,30 +14,19 @@ namespace BlockChainAPI.Controllers
     [ApiController]
     public class BlockController : ControllerBase
     {
-        private readonly IBlockService _miningService;
-        private readonly IUserRepository _user_service;
+        private readonly IBlockService _blockService;
 
-        public BlockController(IBlockService miningService, IUserRepository userService)
+        public BlockController(IBlockService blockService)
         {
-            _miningService = miningService;
-            _user_service = userService;
+            _blockService = blockService;
         }
 
         [HttpPost("{userId}")]
-        public async Task<IActionResult> MineBlock(int userId, [FromBody] List<Document> documents)
+        public async Task<IActionResult> CreateBlock(int userId, [FromBody] List<Document> documents)
         {
-            try
-            {
-                Response<User> result = await _user_service.GetUser(userId);
-                if (!result.Success) { return StatusCode(500, result); }
-                await _miningService.BuildBlock(result.Data, documents);
-                return Ok();
-
-            }
-            catch (Exception ex)
-            {
-                return BadRequest($"Error mining block: {ex.Message}");
-            }
+            Response<Block> responseResult = await _blockService.BuildBlock(userId, documents);
+            if (!responseResult.Success) { return StatusCode(500, responseResult); }
+            return Ok(responseResult);
         }
     }
 }

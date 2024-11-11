@@ -8,13 +8,13 @@ using BlockChainAPI.Utilities.ResponseMessage;
 
 namespace BlockChainAPI.Repository
 {
-    public class ConfigurationService : IConfigurationRepository
+    public class ConfigurationRepository : IConfigurationRepository
     {
         private readonly BlockChainContext _context;
         private readonly Message message;
 
 
-        public ConfigurationService(BlockChainContext context, MessageService messages)
+        public ConfigurationRepository(BlockChainContext context, MessageService messages)
         {
             _context = context;
             message = messages.Get_Message();

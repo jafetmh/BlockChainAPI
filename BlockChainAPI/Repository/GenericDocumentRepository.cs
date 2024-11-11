@@ -29,19 +29,10 @@ namespace BlockChainAPI.Repository
         {
             try
             {
-
-                //foreach (MemPoolDocument document in documents)
-                //{
-                //    document.MemPoolID = memPool.Id;
-                //    document.CreationDate = document.CreationDate.AddHours(-6);
-                //}
                 await _context.BulkInsertAsync(documents);
                 return ResponseResult.CreateResponse<T>(true, message.Success.Set);
             }
-            catch (Exception ex)
-            {
-                return ResponseResult.CreateResponse<T>(true, ex.Message);
-            }
+            catch { throw; }
         }
 
         //bulk delete
@@ -52,10 +43,7 @@ namespace BlockChainAPI.Repository
                 await _context.BulkDeleteAsync(documents);
                 return ResponseResult.CreateResponse<T>(true, message.Success.Remove);
             }
-            catch (Exception ex)
-            {
-                return ResponseResult.CreateResponse<T>(false, ex.Message);
-            }
+            catch { throw; }
         }
 
         //delete one document

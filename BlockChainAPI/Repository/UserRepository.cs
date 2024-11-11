@@ -10,12 +10,12 @@ using System.Security.Cryptography;
 
 namespace BlockChainAPI.Repository
 {
-    public class UserService : IUserRepository
+    public class UserRepository : IUserRepository
     {
         private readonly BlockChainContext _context;
         private readonly Message message;
 
-        public UserService(BlockChainContext context, MessageService messages)
+        public UserRepository(BlockChainContext context, MessageService messages)
         {
             _context = context;
             message = messages.Get_Message();

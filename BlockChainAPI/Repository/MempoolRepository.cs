@@ -21,7 +21,7 @@ namespace BlockChainAPI.Repository
         }
 
         //Get
-        public async Task<Response<MemPool>> GetUserMempool(int userId)
+        public async Task<Response<MemPool>> GetMempool(int userId)
         {
             try
             {
@@ -41,7 +41,7 @@ namespace BlockChainAPI.Repository
         {
             try
             {
-                Response<MemPool> result = await GetUserMempool(userId);
+                Response<MemPool> result = await GetMempool(userId);
                 if (result.Data == null)
                 {
 
@@ -50,64 +50,6 @@ namespace BlockChainAPI.Repository
                     await _context.SaveChangesAsync();
                 }
                 return result;
-            }
-            catch { throw; }
-        }
-
-        //Get all user mempool docs
-        public async Task<Response<List<DocumentDTO>>> GetUserMempoolDocuments(int userId)
-        {
-
-            List<DocumentDTO> documents = new List<DocumentDTO>();
-            try
-            {
-                Response<MemPool> result = await GetUserMempool(userId);
-                MemPool memPool = result.Data;
-                if (memPool != null)
-                {
-
-                    documents = memPool.Documents
-                        .Select(doc => new DocumentDTO
-                        {
-                            Id = doc.Id,
-                            Owner = doc.Owner,
-                            FileType = doc.FileType,
-                            CreationDate = doc.CreationDate,
-                            Size = doc.Size,
-                            Doc_encode = doc.Doc_encode,
-                        }).ToList();
-
-                }
-                return ResponseResult.CreateResponse(true, _message.Success.Get, documents);
-            }
-            catch { throw; };
-        }
-
-        //Get ById
-        public async Task<Response<DocumentDTO>> GetMempoolDocumentById(int userId, int documentId)
-        {
-            try
-            {
-                Response<MemPool> result = await GetUserMempool(userId);
-                if (!result.Success) { return ResponseResult.CreateResponse<DocumentDTO>(false, _message.Failure.Get); }
-                MemPoolDocument document = result.Data.Documents
-                        .FirstOrDefault(d => d.Id == documentId);
-
-                if (document != null)
-                {
-                    var documentDto = new DocumentDTO
-                    {
-                        Id = document.Id,
-                        Owner = document.Owner,
-                        FileType = document.FileType,
-                        CreationDate = document.CreationDate,
-                        Size = document.Size,
-                        Doc_encode = document.Doc_encode,
-                    };
-
-                    return ResponseResult.CreateResponse(true, _message.Success.Get, documentDto);
-                }
-                return ResponseResult.CreateResponse<DocumentDTO>(false, _message.Failure.Get);
             }
             catch { throw; }
         }
