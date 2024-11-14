@@ -2,11 +2,13 @@
 using BlockChain_DB.Response;
 using BlockChainAPI.Interfaces.IDataService;
 using BlockChainAPI.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BlockChainAPI.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class ConfigurationController : ControllerBase
