@@ -1,4 +1,5 @@
 ﻿using BlockChain_DB;
+using BlockChain_DB.Response;
 using BlockChainAPI.Interfaces.IDataService;
 using BlockChainAPI.Services;
 using Microsoft.AspNetCore.Http;
@@ -17,25 +18,25 @@ namespace BlockChainAPI.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetMaxNumOfDocuments() {
-            var response = _configurationService.GetMaxBlockDocuments();
+        public async Task<IActionResult> GetMaxNumOfDocuments() {
+            Response<SystemConfig> response = await _configurationService.GetMaxBlockDocuments();
             if (response.Success) { return Ok(response); }
             return BadRequest(response);
         }
 
-        [HttpPost("{value}")]
-        public IActionResult SetMaxNumOfDocuments( int value)
+        [HttpPost]
+        public async Task<IActionResult> SetMaxNumOfDocuments([FromBody] SystemConfig config)
         {
-            var response =_configurationService.SetMaxBlockDocuments(value);
+            Response<SystemConfig> response = await _configurationService.SetMaxBlockDocuments(config);
             if(response.Success) { return Ok( response); }
             return StatusCode(500, response);
         }
 
         [HttpPut]
-        public async Task<ActionResult> UpdateMaxDocConfig([FromBody] SystemConfig sysConfig) { 
-            var result = await _configurationService.UpdateMaxDocumentPerBlock(sysConfig);
-            if(result.Success) return Ok(result.Message);
-            return StatusCode(500, result.Message);
+        public async Task<ActionResult> UpdateMaxDocConfig([FromBody] SystemConfig config) {
+            Response<SystemConfig> result = await _configurationService.UpdateMaxDocumentPerBlock(config);
+            if(result.Success) return Ok(result);
+            return StatusCode(500, result);
         }
     }
 }

@@ -5,6 +5,7 @@ using BlockChain_DB.Response;
 using BlockChainAPI.Interfaces.IDataService;
 using BlockChainAPI.Utilities;
 using BlockChainAPI.Utilities.ResponseMessage;
+using Microsoft.EntityFrameworkCore;
 
 namespace BlockChainAPI.Repository
 {
@@ -21,42 +22,43 @@ namespace BlockChainAPI.Repository
         }
 
         //get
-        public Response<SystemConfig> GetMaxBlockDocuments()
+        public async Task<Response<SystemConfig>> GetMaxBlockDocuments()
         {
-            var config = _context.SystemConfig.FirstOrDefault(x => x.Key == "MaxBlockDocuments");
-            if (config != null) { return ResponseResult.CreateResponse(true, message.Success.Get, config); }
-            return ResponseResult.CreateResponse<SystemConfig>(false, message.Failure.Get);
-        }
-        //set
-        public Response<SystemConfig> SetMaxBlockDocuments(int value)
-        {
-
-            var config = _context.SystemConfig.FirstOrDefault(x => x.Key == "MaxBlockDocuments");
-
-            if (config != null)
+            SystemConfig config = await _context.SystemConfig.FirstOrDefaultAsync(sc => sc.Key == "MaxBlockDocuments");
+            if (config == null)
             {
-                config.Value = value.ToString();
-                _context.SaveChanges();
-            }
-            else
-            {
-                _context.SystemConfig.Add(new SystemConfig
+                config = new()
                 {
                     Key = "MaxBlockDocuments",
-                    Value = value.ToString()
-                });
+                    Value = "5"
+                };
+                _context.SystemConfig.Add(config);
 
-                _context.SaveChanges();
+               await _context.SaveChangesAsync();
             }
-            return ResponseResult.CreateResponse<SystemConfig>(true, message.Success.Set);
+            return ResponseResult.CreateResponse<SystemConfig>(true, message.Success.Get, config);
         }
-        //update
-        public async Task<Response<SystemConfig>> UpdateMaxDocumentPerBlock(SystemConfig sysconfig)
+        //set
+        public async Task<Response<SystemConfig>> SetMaxBlockDocuments(SystemConfig systemconfig)
         {
-            var config = await _context.SystemConfig.FindAsync(sysconfig.Key); //Ef rastrea los cambios de entidades cargadas desde el contexto
+
+            SystemConfig config = await _context.SystemConfig.FirstOrDefaultAsync(sc => sc.Key == systemconfig.Key);
+
             if (config != null)
             {
-                config.Value = sysconfig.Value;
+                config.Value = systemconfig.Value;
+                await _context.SaveChangesAsync();
+                return ResponseResult.CreateResponse(true, message.Success.Set, config);
+            }
+            return ResponseResult.CreateResponse<SystemConfig>(false, message.Failure.Set);
+        }
+        //update
+        public async Task<Response<SystemConfig>> UpdateMaxDocumentPerBlock(SystemConfig systemconfig)
+        {
+            var config = await _context.SystemConfig.FindAsync(systemconfig.Id); //Ef rastrea los cambios de entidades cargadas desde el contexto
+            if (config != null)
+            {
+                config.Value = systemconfig.Value;
                 await _context.SaveChangesAsync();
                 return ResponseResult.CreateResponse(true, message.Success.Modify, config);
             }

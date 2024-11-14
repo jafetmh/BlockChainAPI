@@ -1,5 +1,4 @@
 ﻿using BlockChain_DB;
-using BlockChain_DB.DTO;
 using BlockChain_DB.Response;
 using BlockChainAPI.Interfaces.IServices.IAppServices;
 using Microsoft.AspNetCore.Authorization;
@@ -26,7 +25,7 @@ namespace BlockChainAPI.Controllers
         public async Task<ActionResult<IEnumerable<MemPoolDocument>>> GetUserMemPoolDocuments(int userId)
         {
             var result = await _memPoolDocumentService.GetMemPoolDocuments(userId);
-            if (result.Success) return StatusCode(500, result);
+            if (!result.Success) return StatusCode(500, result);
             return Ok(result);
 
         }
@@ -53,8 +52,9 @@ namespace BlockChainAPI.Controllers
 
         }
 
+        //DELETE
         [Authorize]
-        [HttpDelete("{userId}")]
+        [HttpDelete("{documentId}")]
         public async Task<ActionResult> DeleteMemPoolDocument(int documentId)
         {
             Response<MemPoolDocument> responseResult = await _memPoolDocumentService.DeleteMemPoolDocument(documentId);

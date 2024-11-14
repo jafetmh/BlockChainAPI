@@ -1,32 +1,52 @@
 ﻿using BlockChain_DB;
+using BlockChain_DB.General.Message;
 using BlockChain_DB.Response;
 using BlockChainAPI.Interfaces.IDataService;
 using BlockChainAPI.Interfaces.IServices.IAppServices;
+using BlockChainAPI.Interfaces.IServices.ICrypto.AES;
+using BlockChainAPI.Utilities;
+using BlockChainAPI.Utilities.ResponseMessage;
 
 namespace BlockChainAPI.Services.AppServices
 {
-    public class DocumentService: IDocumentService
+    public class DocumentService : IDocumentService
     {
-
-        private readonly IGenericDocumentRepository<Document> _documentRespository;
-
-        public DocumentService(IGenericDocumentRepository<Document> documentRespository, IGenericDocumentRepository<MemPoolDocument> memPoolDocumentRespository)
+        private readonly IGenericDocumentRepository<Document> _documentRepository;
+        private readonly IAESEncryption _encryption;
+        private readonly Message _message;
+        public DocumentService(IGenericDocumentRepository<Document> documentRespository,
+                               IAESEncryption encryption,
+                               MessageService message)
         {
-            _documentRespository = documentRespository;
+            _documentRepository = documentRespository;
+            _encryption = encryption;
+            _message = message.Get_Message();
         }
 
         //Document services
-        public async Task<Response<Document>> BulkCreateDocuments(int userId, List<Document> documents, Block block)
+        public async Task<Response<Document>> BulkCreateDocuments(User user, List<Document> documents, Block block)
         {
-            foreach (Document document in documents)
+            try
             {
-                document.BlockID = block.Id;
-                document.CreationDate = document.CreationDate.AddHours(-6);
+                int id = 0;
+                _encryption.GetKeyAndIv(user);
+                foreach (Document document in documents)
+                {
+                    document.Id = id;
+                    document.BlockID = block.Id;
+                    document.CreationDate = document.CreationDate.AddHours(-6);
+                    document.Doc_encode = await _encryption.EncryptDocument(document.Doc_encode);
+                    id++;
+                }
+                return await _documentRepository.BulkCreateDocuments(documents);
             }
-            return await _documentRespository.BulkCreateDocuments(userId, documents);
+            catch (Exception ex) {
+                return ResponseResult.CreateResponse<Document>(false, ex.Message);
+            }
+
         }
-        public async Task<Response<Document>> BulkDeleteDocuments(List<Document> documents) => await _documentRespository.BulkDeleteDocument(documents);
-        public async Task<Response<Document>> DeleteDocument(int documentId) => await _documentRespository.DeleteDocument(documentId);
+        public async Task<Response<Document>> BulkDeleteDocuments(List<Document> documents) => await _documentRepository.BulkDeleteDocument(documents);
+        public async Task<Response<Document>> DeleteDocument(int documentId) => await _documentRepository.DeleteDocument(documentId);
 
     }
 }

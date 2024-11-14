@@ -4,6 +4,7 @@ using BlockChain_DB;
 using BlockChainAPI.Interfaces.IRepository;
 using BlockChainAPI.Utilities;
 using BlockChain_DB.Response;
+using BlockChainAPI.Utilities.ResponseMessage;
 
 namespace BlockChainAPI.Repository
 {
@@ -12,9 +13,9 @@ namespace BlockChainAPI.Repository
         private readonly IMempoolRepository _mempoolRepository;
         private readonly Message _message;
 
-        public MemPoolDocumentRepository(IMempoolRepository mempoolRepository, Message message) { 
+        public MemPoolDocumentRepository(IMempoolRepository mempoolRepository, MessageService message) { 
             _mempoolRepository = mempoolRepository;
-            _message = message;
+            _message = message.Get_Message();
         }
 
         //Get all user mempool docs
@@ -26,10 +27,11 @@ namespace BlockChainAPI.Repository
             {
                 Response<MemPool> result = await _mempoolRepository.GetMempool(userId);
                 MemPool memPool = result.Data;
-                if (memPool != null)
+                if (memPool == null)
                 {
-
-                    documents = memPool.Documents
+                    return ResponseResult.CreateResponse<List<DocumentDTO>>(false, _message.NotFound);
+                }
+                documents = memPool.Documents
                         .Select(doc => new DocumentDTO
                         {
                             Id = doc.Id,
@@ -40,7 +42,6 @@ namespace BlockChainAPI.Repository
                             Doc_encode = doc.Doc_encode,
                         }).ToList();
 
-                }
                 return ResponseResult.CreateResponse(true, _message.Success.Get, documents);
             }
             catch { throw; };

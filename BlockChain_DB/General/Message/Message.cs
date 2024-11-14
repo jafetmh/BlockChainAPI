@@ -5,5 +5,6 @@
         public MessageModel Success {  get; set; }
         public MessageModel Failure { get; set; }
         public string NotFound { get; set; }
+        public string InvalidMaxDocuments { get; set; }
     }
 }

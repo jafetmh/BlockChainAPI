@@ -11,5 +11,6 @@
     "Modify": "Error al modificar",
     "Remove": "Error al eliminar"
   },
-  "NotFound": "No encontrado"
+  "NotFound": "No encontrado",
+  "InvalidMaxDocuments": "Cantidad de documentos supera lo establecido por configuración del sistema."
 }

@@ -1,12 +1,8 @@
 ﻿using BlockChain_DB;
-using BlockChain_DB.DTO;
 using BlockChain_DB.Response;
-using BlockChainAPI.Interfaces;
-using BlockChainAPI.Interfaces.IDataService;
 using BlockChainAPI.Interfaces.IServices.IAppServices;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Server.IIS;
-using System.Threading.Tasks;
 
 namespace BlockChainAPI.Controllers
 {
@@ -21,10 +17,20 @@ namespace BlockChainAPI.Controllers
             _blockService = blockService;
         }
 
-        [HttpPost("{userId}")]
-        public async Task<IActionResult> CreateBlock(int userId, [FromBody] List<Document> documents)
+        [Authorize]
+        [HttpGet("{userId}")]
+        public async Task<ActionResult> GetBlock(int userId)
         {
-            Response<Block> responseResult = await _blockService.BuildBlock(userId, documents);
+            Response<List<Block>> responseResult = await _blockService.GetBlocks(userId);
+            if (!responseResult.Success) return StatusCode(500, responseResult);
+            return Ok(responseResult);
+        }
+
+        [Authorize]
+        [HttpPost("{userId}")]
+        public async Task<ActionResult> CreateBlock(int userId, [FromBody] List<Document> documents)
+        {
+            Response<Block> responseResult = await _blockService.StartMiningTask(userId, documents);
             if (!responseResult.Success) { return StatusCode(500, responseResult); }
             return Ok(responseResult);
         }

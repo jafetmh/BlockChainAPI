@@ -25,11 +25,12 @@ namespace BlockChainAPI.Repository
 
 
         //bulk create
-        public async Task<Response<T>> BulkCreateDocuments(int userId, List<T> documents)
+        public async Task<Response<T>> BulkCreateDocuments(List<T> documents)
         {
             try
             {
                 await _context.BulkInsertAsync(documents);
+                await _context.BulkSaveChangesAsync();
                 return ResponseResult.CreateResponse<T>(true, message.Success.Set);
             }
             catch { throw; }
@@ -41,6 +42,7 @@ namespace BlockChainAPI.Repository
             try
             {
                 await _context.BulkDeleteAsync(documents);
+                await _context.BulkSaveChangesAsync();
                 return ResponseResult.CreateResponse<T>(true, message.Success.Remove);
             }
             catch { throw; }

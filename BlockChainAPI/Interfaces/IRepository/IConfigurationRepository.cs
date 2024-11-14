@@ -7,9 +7,9 @@ namespace BlockChainAPI.Interfaces.IDataService
     public interface IConfigurationRepository
 
     {
-        public Response<SystemConfig> GetMaxBlockDocuments();
-        public Response<SystemConfig> SetMaxBlockDocuments(int value);
-        public Task<Response<SystemConfig>> UpdateMaxDocumentPerBlock(SystemConfig sysconfig);
+        public Task<Response<SystemConfig>> GetMaxBlockDocuments();
+        public Task<Response<SystemConfig>> SetMaxBlockDocuments(SystemConfig systemconfig);
+        public Task<Response<SystemConfig>> UpdateMaxDocumentPerBlock(SystemConfig systemconfig);
 
     }
 }

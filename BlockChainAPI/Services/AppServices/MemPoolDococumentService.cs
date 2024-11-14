@@ -41,7 +41,7 @@ namespace BlockChainAPI.Services.AppServices
                     document.MemPoolID = memPool.Id;
                     document.CreationDate = document.CreationDate.AddHours(-6);
                 }
-                return await _genericMemPoolDocumentRepository.BulkCreateDocuments(userId, documents);
+                return await _genericMemPoolDocumentRepository.BulkCreateDocuments(documents);
             }
             catch (Exception ex) {
                 return ResponseResult.CreateResponse<MemPoolDocument>(false, _message.Failure.Set);

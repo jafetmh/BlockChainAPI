@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace BlockChain_DB
 {
@@ -18,6 +19,7 @@ namespace BlockChain_DB
         public string Password { get; set; }
         public byte[]? Salt { get; set; }
 
+        [JsonIgnore] //ignores this property when a JSON serialization occurs on return of an http request
         public virtual Chain? Chain { get; set; }
 
         public virtual MemPool? MemPool { get; set; }

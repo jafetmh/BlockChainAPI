@@ -1,12 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace BlockChain_DB
 {
     public class Block
     {
         [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
         public DateTime MiningDate { get; set; }
@@ -22,6 +22,7 @@ namespace BlockChain_DB
         public int ChainID { get; set; }
 
         [ForeignKey(nameof(ChainID))]
+        [JsonIgnore]
         public virtual Chain Chain { get; set; }
 
         public virtual ICollection<Document> Documents { get; } = new List<Document>();

@@ -1,17 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Text.Json.Serialization;
 
 namespace BlockChain_DB
 {
     public class Document
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int Id { get; set; }
 
         public string Owner { get; set; }
@@ -26,7 +22,8 @@ namespace BlockChain_DB
 
         public int BlockID { get; set; }
 
+        [JsonIgnore]
         [ForeignKey(nameof(BlockID))]
-        public virtual Block Block { get; set; }
+        public virtual Block? Block { get; set; }
     }
 }

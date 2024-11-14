@@ -1,6 +1,6 @@
 ﻿using BlockChain_DB;
 
-namespace BlockChainAPI.Interfaces.IServices.ICrypto
+namespace BlockChainAPI.Interfaces.IServices.ICrypto.AES
 {
     public interface ICryptography
     {
