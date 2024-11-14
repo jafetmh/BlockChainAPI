@@ -1,6 +1,7 @@
 ﻿using BlockChain_DB;
+using BlockChain_DB.DTO;
 using BlockChain_DB.General;
-using BlockChainAPI.Interfaces.IDataService;
+using BlockChainAPI.Interfaces.IServices.IAuth;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -17,7 +18,7 @@ namespace BlockChainAPI.Services.Auth
             _configuration = configuration;
         }
 
-        public string GenerateToken(User user)
+        public string GenerateToken(UserDTO user)
         {
             JwtSecurityTokenHandler tokenHandler = new JwtSecurityTokenHandler();
             Jwt jwt = _configuration.GetSection("Jwt").Get<Jwt>();

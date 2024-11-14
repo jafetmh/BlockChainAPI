@@ -7,9 +7,10 @@
   },
   "Error": {
     "Get": "Error al obtener",
-    "Set": "Error al guardar",
+    "Set": "Error al crear",
     "Modify": "Error al modificar",
     "Remove": "Error al eliminar"
   },
-  "NotFound": "No encontrado"
+  "NotFound": "No encontrado",
+  "InvalidMaxDocuments": "Cantidad de documentos supera lo establecido por configuración del sistema."
 }

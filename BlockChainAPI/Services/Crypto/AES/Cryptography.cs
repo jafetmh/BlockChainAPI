@@ -1,15 +1,15 @@
 ﻿using BlockChain_DB;
-using BlockChainAPI.Interfaces.ICrypto;
+using BlockChainAPI.Interfaces.IServices.ICrypto.AES;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace BlockChainAPI.Services.Crypto
+namespace BlockChainAPI.Services.Crypto.AES
 {
     public class Cryptography : ICryptography
     {
 
         //Encryptor
-        public async Task<string> Encrypt(string data, byte[] key, byte[] iv)
+        public async Task<byte[]> Encrypt(string data, byte[] key, byte[] iv)
         {
             try
             {
@@ -26,12 +26,10 @@ namespace BlockChainAPI.Services.Crypto
                 await streamWriter.FlushAsync();
                 cryptoStream.FlushFinalBlock();
 
-                return Convert.ToBase64String(memoryStream.ToArray());
+                return memoryStream.ToArray();
 
             }
-            catch(Exception exc) { 
-                throw new CryptographicException("Error al cifrar: ", exc.Message);
-            }
+            catch{ throw new CryptographicException(); }
         }
 
         //Decryptor
@@ -51,9 +49,7 @@ namespace BlockChainAPI.Services.Crypto
                 return await reader.ReadToEndAsync();
 
             }
-            catch (Exception exc) {
-                throw new CryptographicException("Error al descrifrar: ", exc.Message);
-            }
+            catch (Exception ex){ throw new CryptographicException(); }
         }
     }
 }

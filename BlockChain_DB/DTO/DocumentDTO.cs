@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace BlockChain_DB.DTO
+﻿namespace BlockChain_DB.DTO
 {
-    public class MemPoolDocumentDTO
+    public class DocumentDTO
     {
         public int? Id { get; set; }
         public string Owner { get; set; }

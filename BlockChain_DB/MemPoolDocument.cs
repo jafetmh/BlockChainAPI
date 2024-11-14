@@ -28,5 +28,19 @@ namespace BlockChain_DB
 
         [ForeignKey(nameof(MemPoolID))]
         public virtual MemPool? MemPool { get; set; }
+
+        //convert to MemPoolDocument
+        public static MemPoolDocument FromDocument(Document document)
+        {
+            return new MemPoolDocument
+            {
+                Id = document.Id,
+                Owner = document.Owner,
+                FileType = document.FileType,
+                CreationDate = document.CreationDate,
+                Size = document.Size,
+                Doc_encode = document.Doc_encode
+            };
+        }
     }
 }

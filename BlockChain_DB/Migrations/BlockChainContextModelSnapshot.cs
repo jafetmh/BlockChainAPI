@@ -79,10 +79,7 @@ namespace BlockChain_DB.Migrations
             modelBuilder.Entity("BlockChain_DB.Document", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int>("BlockID")
                         .HasColumnType("int");
@@ -214,6 +211,9 @@ namespace BlockChain_DB.Migrations
                     b.Property<string>("Password")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<byte[]>("Salt")
+                        .HasColumnType("varbinary(max)");
 
                     b.Property<string>("UserN")
                         .IsRequired()
