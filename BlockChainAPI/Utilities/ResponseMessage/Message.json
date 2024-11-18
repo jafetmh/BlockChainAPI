@@ -12,5 +12,8 @@
     "Remove": "Error al eliminar"
   },
   "NotFound": "No encontrado",
-  "InvalidMaxDocuments": "Cantidad de documentos supera lo establecido por configuración del sistema."
+  "InvalidCredential": "Credenciales inválidas",
+  "InvalidMaxDocuments": "Cantidad de documentos supera lo establecido por configuración del sistema.",
+  "ChainInconsistency": "Se ha encontrado incosistencia en la cadena de bloques.",
+  "CorruptedBlocks": "Bloques corrompidos."
 }

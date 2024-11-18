@@ -59,6 +59,7 @@ namespace BlockChainAPI.Controllers
         [HttpPost("login")]
         public async Task<ActionResult> Login([FromBody] UserDTO user)
         {
+            Console.WriteLine($"User to login: \n {user}");
             Response<UserDTO> response = await _userService.Login(user.UserN, user.Password);
             if (response.Success) {
                 //Get Token
