@@ -1,4 +1,5 @@
 ﻿using BlockChain_DB;
+using BlockChain_DB.General;
 using BlockChain_DB.Response;
 using BlockChainAPI.Interfaces.IServices.IAppServices;
 using Microsoft.AspNetCore.Authorization;
@@ -21,7 +22,7 @@ namespace BlockChainAPI.Controllers
         [HttpGet("{userId}")]
         public async Task<ActionResult> GetBlock(int userId)
         {
-            Response<List<Block>> responseResult = await _blockService.GetBlocks(userId);
+            Response<BlockResponse> responseResult = await _blockService.GetBlocks(userId);
             if (!responseResult.Success) return StatusCode(500, responseResult);
             return Ok(responseResult);
         }

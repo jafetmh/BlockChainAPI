@@ -3,6 +3,7 @@ using BlockChain_DB.DTO;
 using BlockChain_DB.General.Message;
 using BlockChain_DB.Response;
 using BlockChainAPI.Interfaces.IDataService;
+using BlockChainAPI.Interfaces.IServices.ICrypto.SHA256;
 using BlockChainAPI.Utilities;
 using BlockChainAPI.Utilities.ResponseMessage;
 using Microsoft.EntityFrameworkCore;
@@ -13,11 +14,13 @@ namespace BlockChainAPI.Repository
     public class UserRepository : IUserRepository
     {
         private readonly BlockChainContext _context;
+        private readonly ISHA256Hash _hash;
         private readonly Message message;
 
-        public UserRepository(BlockChainContext context, MessageService messages)
+        public UserRepository(BlockChainContext context, ISHA256Hash hash, MessageService messages)
         {
             _context = context;
+            _hash = hash;
             message = messages.Get_Message();
         }
 
@@ -39,6 +42,7 @@ namespace BlockChainAPI.Repository
                 rng.GetBytes(salt);
             }
             user.Salt = salt;
+            user.Password = BCrypt.Net.BCrypt.HashPassword(user.Password);
             _context.Users.Add(user);
             int entriesWriten = await _context.SaveChangesAsync();
 
@@ -81,21 +85,37 @@ namespace BlockChainAPI.Repository
 
         public async Task<Response<UserDTO>> Login(string userName, string password)
         {
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.UserN == userName && u.Password == password);
-
-            if (user != null)
+            try
             {
-                UserDTO userDTO = new UserDTO
+                var user = await _context.Users.FirstOrDefaultAsync(u => u.UserN == userName);
+
+                if (user != null)
                 {
-                    Id = user.Id,
-                    UserN = user.UserN,
-                    Name = user.Name,
-                    LastName = user.LastName,
-                    Email = user.Email,
-                };
-                return ResponseResult.CreateResponse(true, message.Success.Get, userDTO);
+                    if (BCrypt.Net.BCrypt.Verify(password, user.Password))
+                    {
+                        UserDTO userDTO = new()
+                        {
+                            Id = user.Id,
+                            UserN = user.UserN,
+                            Name = user.Name,
+                            LastName = user.LastName,
+                            Email = user.Email,
+                        };
+                        return ResponseResult.CreateResponse(true, message.Success.Get, userDTO);
+                    }
+                    else
+                    {
+                        return ResponseResult.CreateResponse<UserDTO>(false, message.InvalidCredential);
+                    }
+                }
+
+                return ResponseResult.CreateResponse<UserDTO>(false, message.NotFound);
             }
-            return ResponseResult.CreateResponse<UserDTO>(false, message.NotFound);
+            catch (Exception ex)
+            {
+                return ResponseResult.CreateResponse<UserDTO>(false, ex.Message);
+            }
         }
+
     }
 }

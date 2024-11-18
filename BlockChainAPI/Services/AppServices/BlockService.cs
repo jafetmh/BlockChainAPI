@@ -1,4 +1,5 @@
 ﻿using BlockChain_DB;
+using BlockChain_DB.General;
 using BlockChain_DB.General.Message;
 using BlockChain_DB.Response;
 using BlockChainAPI.Interfaces.IDataService;
@@ -129,26 +130,72 @@ namespace BlockChainAPI.Services.AppServices
             return docs_base64String;
         }
 
-        public async Task<Response<List<Block>>> GetBlocks(int userId)
+        public async Task<Response<BlockResponse>> GetBlocks(int userId)
         {
             try
             {
                 Response<List<Block>> blocks = await _blockRepository.GetBlocks(userId);
-                if (!blocks.Success || blocks.Data.Count == 0) return blocks;
+                if (!blocks.Success | blocks.Data.Count == 0) return ResponseResult.CreateResponse<BlockResponse>(false, _message.NotFound);
                 Response<User> user = await _userRepository.GetUser(userId);
                 _encryption.GetKeyAndIv(user.Data);
-                foreach (Block block in blocks.Data)
+                List<Block> incosistentBlocks = VerifyBlockHashesConsistency(blocks.Data);
+                List<Block> alteredBlocks = await VerifyBlockIntegrity(blocks.Data);
+                BlockResponse response = new ()
                 {
-                    foreach (Document document in block.Documents)
-                    {
-                        byte[] cipherDoc = Convert.FromBase64String(document.Doc_encode);
-                        document.Doc_encode = await _encryption.DecryptDocument(cipherDoc);
-                    }
-                }
-                return blocks;
+                    Blocks = blocks.Data,
+                    InconsistentBlocks = incosistentBlocks.Count != 0? incosistentBlocks: null,
+                    AlteredBlocks = alteredBlocks.Count != 0? alteredBlocks: null
+
+                };
+                return ResponseResult.CreateResponse(true, _message.Success.Get, response);
             }
-            catch (Exception ex) { return ResponseResult.CreateResponse<List<Block>>(false, ex.Message); }
+            catch (Exception ex) { 
+                Console.WriteLine(ex.ToString());
+                return ResponseResult.CreateResponse<BlockResponse>(false, ex.Message); 
+            }
 
         }
+
+        public List<Block> VerifyBlockHashesConsistency(List<Block> blocks)
+        {
+            List<Block> blockInconsistency = new();
+            for(int i = 1; i < blocks.Count; i++)
+            {
+                if (blocks[i].Previous_Hash != blocks[i-1].Hash)
+                {
+                    blockInconsistency.Add(blocks[i]);
+                }
+            }
+            return blockInconsistency;
+
+        }
+
+        public async Task<List<Block>> VerifyBlockIntegrity(List<Block> blocks)
+        {
+            List<Block> changedBlocks = new();
+            foreach (Block block in blocks) {
+
+                List<Document> documents = block.Documents.ToList();
+                await DecryptDocuments(documents);
+                string docsBase64 = GetDocsBase64tring(documents);
+                string blockData = $"{block.Previous_Hash}{block.MiningDate}{block.Attempts}{docsBase64}";
+                string blockHash = _sha256Hash.GenerateHash(blockData);
+                if (block.Hash != blockHash) { 
+                    changedBlocks.Add(block);
+                }
+            }
+            return changedBlocks;
+
+        }
+
+        public async Task DecryptDocuments(List<Document> documents)
+        {
+            foreach (Document document in documents)
+            {
+                byte[] cipherDoc = Convert.FromBase64String(document.Doc_encode);
+                document.Doc_encode = await _encryption.DecryptDocument(cipherDoc);
+            }
+        }
+
     }
 }
