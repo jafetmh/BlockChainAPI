@@ -7,9 +7,13 @@
   },
   "Error": {
     "Get": "Error al obtener",
-    "Set": "Error al guardar",
+    "Set": "Error al crear",
     "Modify": "Error al modificar",
     "Remove": "Error al eliminar"
   },
-  "NotFound": "No encontrado"
+  "NotFound": "No encontrado",
+  "InvalidCredential": "Credenciales inválidas",
+  "InvalidMaxDocuments": "Cantidad de documentos supera lo establecido por configuración del sistema.",
+  "ChainInconsistency": "Se ha encontrado incosistencia en la cadena de bloques.",
+  "CorruptedBlocks": "Bloques corrompidos."
 }

@@ -1,9 +1,9 @@
 ﻿using BlockChain_DB;
-using BlockChainAPI.Interfaces.ICrypto;
+using BlockChainAPI.Interfaces.IServices.ICrypto.AES;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace BlockChainAPI.Services.Crypto
+namespace BlockChainAPI.Services.Crypto.AES
 {
     public class Cryptography : ICryptography
     {
@@ -29,9 +29,7 @@ namespace BlockChainAPI.Services.Crypto
                 return memoryStream.ToArray();
 
             }
-            catch(Exception exc) { 
-                throw new CryptographicException("Error al cifrar: ", exc.Message);
-            }
+            catch{ throw new CryptographicException(); }
         }
 
         //Decryptor
@@ -44,16 +42,14 @@ namespace BlockChainAPI.Services.Crypto
                 aes.IV = iv;
 
                 ICryptoTransform decryptor = aes.CreateDecryptor();
-                await using MemoryStream memoryStream = new(data);
-                await using CryptoStream cryptoStream = new(memoryStream, decryptor, CryptoStreamMode.Read);
+                using MemoryStream memoryStream = new(data);
+                using CryptoStream cryptoStream = new(memoryStream, decryptor, CryptoStreamMode.Read);
                 using StreamReader reader = new(cryptoStream);
 
                 return await reader.ReadToEndAsync();
 
             }
-            catch (Exception exc) {
-                throw new CryptographicException("Error al descrifrar: ", exc.Message);
-            }
+            catch (Exception ex){ throw new CryptographicException(); }
         }
     }
 }

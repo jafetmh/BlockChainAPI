@@ -36,7 +36,8 @@ namespace BlockChain_DB.Migrations
                     LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     DateOfBirth = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Password = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Salt = table.Column<byte[]>(type: "varbinary(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -85,8 +86,7 @@ namespace BlockChain_DB.Migrations
                 name: "blocks",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<int>(type: "int", nullable: false),
                     MiningDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Attempts = table.Column<int>(type: "int", nullable: false),
                     Milliseconds = table.Column<int>(type: "int", nullable: false),
@@ -133,8 +133,7 @@ namespace BlockChain_DB.Migrations
                 name: "documents",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<int>(type: "int", nullable: false),
                     Owner = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     FileType = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CreationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -144,7 +143,6 @@ namespace BlockChain_DB.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_documents", x => x.Id);
                     table.ForeignKey(
                         name: "FK_documents_blocks_BlockID",
                         column: x => x.BlockID,

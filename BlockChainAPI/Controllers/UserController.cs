@@ -1,6 +1,8 @@
 ﻿using BlockChain_DB;
 using BlockChain_DB.DTO;
+using BlockChain_DB.Response;
 using BlockChainAPI.Interfaces.IDataService;
+using BlockChainAPI.Interfaces.IServices.IAuth;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,9 +14,9 @@ namespace BlockChainAPI.Controllers
     public class UserController : ControllerBase
     {
         private readonly IAuthService _authService;
-        private readonly IUserService _userService;
+        private readonly IUserRepository _userService;
 
-        public UserController(IUserService userService, IAuthService authService)
+        public UserController(IUserRepository userService, IAuthService authService)
         {
             _userService = userService;
             _authService = authService;
@@ -23,15 +25,15 @@ namespace BlockChainAPI.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult> GetUser(int id) { 
         
-            var response = await _userService.GetUser(id);
+            Response<User> response = await _userService.GetUser(id);
             if(response.Success) { return Ok(response.Data); }
-            return BadRequest(response.Message);
+            return BadRequest(response);
         }
 
         [HttpPost]
         public async Task<ActionResult> SaveUser([FromBody] User user)
         {
-            var response = await _userService.SetUser(user);
+            Response<User> response = await _userService.SetUser(user);
             if (response.Success) { return Ok(response); }
             return StatusCode(500, response);
         }
@@ -39,7 +41,7 @@ namespace BlockChainAPI.Controllers
         [HttpPut]
         public async Task<ActionResult> UpdateUser([FromBody] User user)
         {
-            var response = await _userService.UpdateUser(user);
+            Response<User> response = await _userService.UpdateUser(user);
             if (response.Success) { return Ok(response); };
             return StatusCode(500, response);
         }
@@ -47,7 +49,7 @@ namespace BlockChainAPI.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteUser(int id)
         {
-            var response = await _userService.DeleteUser(id);
+            Response<User> response = await _userService.DeleteUser(id);
             if (response.Success) { return Ok(response); }
             return BadRequest(response);
         }
@@ -57,7 +59,8 @@ namespace BlockChainAPI.Controllers
         [HttpPost("login")]
         public async Task<ActionResult> Login([FromBody] UserDTO user)
         {
-            var response = await _userService.Login(user.Email, user.Password);
+            Console.WriteLine($"User to login: \n {user}");
+            Response<UserDTO> response = await _userService.Login(user.UserN, user.Password);
             if (response.Success) {
                 //Get Token
                 var token = _authService.GenerateToken(response.Data);
@@ -65,7 +68,7 @@ namespace BlockChainAPI.Controllers
                 return Ok(new { User = response.Data, Token = token});
 
             }
-            return NotFound(response.Message);
+            return NotFound(response);
         }
     }
 }
