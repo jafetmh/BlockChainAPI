@@ -1,4 +1,5 @@
-﻿using BlockChain_DB;
+﻿using System.Linq;
+using BlockChain_DB;
 using BlockChain_DB.DTO;
 using BlockChain_DB.General.Message;
 using BlockChain_DB.Response;
@@ -49,5 +50,44 @@ namespace BlockChainAPI.Services.AppServices
         } 
         public async Task<Response<MemPoolDocument>> BulkDeleteMemPoolDocuments(List<MemPoolDocument> documents) => await _genericMemPoolDocumentRepository.BulkDeleteDocument(documents);
         public async Task<Response<MemPoolDocument>> DeleteMemPoolDocument(int documentId) => await _genericMemPoolDocumentRepository.DeleteDocument(documentId);
+
+        public async Task<Response<DocumentDTO>> GetDocumentById(int userId, int documentId)
+        {
+            try
+            {
+                return await _memPoolDocumentRepository.GetMempoolDocumentById(userId, documentId);
+            }
+            catch (Exception ex)
+            {
+                return ResponseResult.CreateResponse<DocumentDTO>(false, _message.Failure.Get);
+            }
+        }
+
+        public async Task<Response<List<DocumentDTO>>> GetDocumentsByIds(int userId, List<int> documentIds)
+        {
+            try
+            {
+                // Obtener todos los documentos del usuario
+                var memPoolDocumentsResult = await _memPoolDocumentRepository.GetMempoolDocuments(userId);
+                if (!memPoolDocumentsResult.Success)
+                    return ResponseResult.CreateResponse<List<DocumentDTO>>(false, _message.Failure.Get);
+
+                // Filtrar los documentos seleccionados por sus IDs
+                var selectedDocuments = memPoolDocumentsResult.Data
+                    .Where(doc => documentIds.Contains((int)doc.Id))
+                    .ToList();
+
+                if (!selectedDocuments.Any())
+                    return ResponseResult.CreateResponse<List<DocumentDTO>>(false, "No se encontraron documentos.");
+
+                return ResponseResult.CreateResponse(true, _message.Success.Get, selectedDocuments);
+            }
+            catch (Exception ex)
+            {
+                return ResponseResult.CreateResponse<List<DocumentDTO>>(false, _message.Failure.Get);
+            }
+        }
+
+
     }
 }

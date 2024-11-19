@@ -1,4 +1,6 @@
-﻿using BlockChain_DB;
+﻿using System.IO.Compression;
+using BlockChain_DB;
+using BlockChain_DB.DTO;
 using BlockChain_DB.Response;
 using BlockChainAPI.Interfaces.IServices.IAppServices;
 using Microsoft.AspNetCore.Authorization;
@@ -43,7 +45,7 @@ namespace BlockChainAPI.Controllers
 
         //BULK Delete
         [Authorize]
-        [HttpDelete("/bulkdelete")]
+        [HttpDelete("bulkdelete")]
         public async Task<ActionResult> BulkDelete([FromBody] List<MemPoolDocument> documents)
         {
             Response<MemPoolDocument> result = await _memPoolDocumentService.BulkDeleteMemPoolDocuments(documents);
@@ -62,35 +64,44 @@ namespace BlockChainAPI.Controllers
             return Ok(responseResult);
         }
 
-        //DELETE
-        //[Authorize]
-        //[HttpDelete("{userId}/{documentId}")]
-        //public async Task<ActionResult> DeleteMemPoolDocument(int userId, int documentId)
-        //{
-        //    var result = await _memPoolDocumentService.DeleteMemPoolDocument(userId, documentId);
-        //    if (result.Success) { return Ok(result); }
-        //    return BadRequest(result);
-        //}
 
-        //[HttpGet("{userId}/{documentId}")]
-        //public async Task<ActionResult<DocumentDTO>> GetDocumentById(int userId, int documentId)
-        //{
-        //    try
-        //    {
-        //        var result = await _memPoolDocumentService.GetDocumentById(userId, documentId);
+        [Authorize]
+        [HttpGet("{userId}/document/{documentId}")]
+        public async Task<ActionResult<DocumentDTO>> GetDocumentById(int userId, int documentId)
+        {
+            var result = await _memPoolDocumentService.GetDocumentById(userId, documentId);
+            if (!result.Success) return StatusCode(500, result);
+            return Ok(result);
+        }
 
-        //        if (result.Success)
-        //        {
-        //            return Ok(result.Data);
-        //        }
-        //        return NotFound(result.Message);
+        // Endpoint para descargar múltiples documentos, solo devolviendo los IDs y sus respectivos datos base64
+        [Authorize]
+        [HttpGet("{userId}/documents/zip")]
+        public async Task<ActionResult> GetDocumentsByIds(int userId, [FromQuery] List<int> documentIds)
+        {
+            if (documentIds == null || !documentIds.Any())
+                return BadRequest("Debe seleccionar al menos un documento.");
 
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return StatusCode(500, ex.Message);
-        //    }
-        //}
+            // Obtener los documentos por ID
+            var documentsResult = await _memPoolDocumentService.GetDocumentsByIds(userId, documentIds);
 
+            if (!documentsResult.Success)
+                return StatusCode(500, documentsResult);
+
+            var documents = documentsResult.Data;
+
+            // Crear un objeto de respuesta que solo incluye los IDs y los datos base64
+            var documentResponses = documents.Select(doc => new
+            {
+                doc.Id,
+                doc.Owner,
+                doc.FileType,
+                doc.Doc_encode
+            }).ToList();
+
+            // Devolver la respuesta con los documentos solicitados
+            return Ok(documentResponses);
+        }
     }
 }
+

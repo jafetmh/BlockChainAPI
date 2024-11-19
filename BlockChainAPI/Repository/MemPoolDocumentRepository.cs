@@ -75,5 +75,52 @@ namespace BlockChainAPI.Repository
             }
             catch { throw; }
         }
+
+
+        public async Task<Response<List<DocumentDTO>>> GetDocumentsByIds(int userId, List<int> documentIds)
+        {
+            try
+            {
+                // Obtener el mempool del usuario
+                Response<MemPool> result = await _mempoolRepository.GetMempool(userId);
+                if (!result.Success)
+                {
+                    return ResponseResult.CreateResponse<List<DocumentDTO>>(false, _message.Failure.Get);
+                }
+
+                MemPool memPool = result.Data;
+                if (memPool == null)
+                {
+                    return ResponseResult.CreateResponse<List<DocumentDTO>>(false, _message.NotFound);
+                }
+
+                // Filtrar los documentos por los IDs proporcionados
+                var documents = memPool.Documents
+                    .Where(doc => documentIds.Contains(doc.Id))
+                    .Select(doc => new DocumentDTO
+                    {
+                        Id = doc.Id,
+                        Owner = doc.Owner,
+                        FileType = doc.FileType,
+                        CreationDate = doc.CreationDate,
+                        Size = doc.Size,
+                        Doc_encode = doc.Doc_encode
+                    })
+                    .ToList();
+
+                return ResponseResult.CreateResponse(true, _message.Success.Get, documents);
+            }
+            catch (Exception ex)
+            {
+                return ResponseResult.CreateResponse<List<DocumentDTO>>(false, _message.Failure.Get, ex.Message);
+            }
+        }
+
+
+
+
+
+
+
     }
 }
