@@ -51,10 +51,11 @@ namespace BlockChainAPI.Services.AppServices
                     document.MemPoolID = memPool.Id;
                     document.CreationDate = document.CreationDate.AddHours(-6);
                 }
-                await _logService.Log(_message.LogMessages.UploadDocument, user.Data.Name); //log
+                await _logService.Log(_message.LogMessages.UploadDocument, user.Data.Name, new { data= documents }); //log
                 return await _genericMemPoolDocumentRepository.BulkCreateDocuments(documents);
             }
             catch (Exception ex) {
+                Console.WriteLine($"Excepcion en AddMempoolDocuments: {ex.ToString()}");
                 return ResponseResult.CreateResponse<MemPoolDocument>(false, _message.Failure.Set);
             }
         } 

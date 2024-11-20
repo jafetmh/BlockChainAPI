@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BlockChain_DB.Migrations
 {
     [DbContext(typeof(BlockChainContext))]
-    [Migration("20241120113642_init")]
+    [Migration("20241120185734_init")]
     partial class init
     {
         /// <inheritdoc />
