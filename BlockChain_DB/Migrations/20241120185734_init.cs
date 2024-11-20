@@ -159,7 +159,6 @@ namespace BlockChain_DB.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_documents", x => x.Id);
                     table.ForeignKey(
                         name: "FK_documents_blocks_BlockID",
                         column: x => x.BlockID,

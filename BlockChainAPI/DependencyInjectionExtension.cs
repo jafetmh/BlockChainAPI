@@ -24,6 +24,7 @@ namespace BlockChainAPI
             services.AddScoped<IChainRepository, ChainRepository>();
             services.AddScoped<IMemPoolDocumentRepository, MemPoolDocumentRepository>();
             services.AddScoped<IMempoolRepository, MempoolRepository>();
+            services.AddScoped<IDocumentRepository, DocumentRepository>();
             services.AddScoped(typeof(IGenericDocumentRepository<>), typeof(GenericDocumentRepository<>));
             return services;
         }
