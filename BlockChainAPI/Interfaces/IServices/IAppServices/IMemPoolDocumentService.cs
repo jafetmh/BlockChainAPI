@@ -10,5 +10,9 @@ namespace BlockChainAPI.Interfaces.IServices.IAppServices
         public Task<Response<MemPoolDocument>> AddMemPoolDocuments(int userId, List<MemPoolDocument> documents);
         public Task<Response<MemPoolDocument>> BulkDeleteMemPoolDocuments(List<MemPoolDocument> documents);
         public Task<Response<MemPoolDocument>> DeleteMemPoolDocument(int documentId);
+        Task<Response<DocumentDTO>> GetDocumentById(int userId, int documentId);
+        Task<Response<List<DocumentDTO>>> GetDocumentsByIds(int userId, List<int> documentIds);
+
+
     }
 }

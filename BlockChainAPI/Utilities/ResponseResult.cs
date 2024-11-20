@@ -13,7 +13,11 @@ namespace BlockChainAPI.Utilities
                 Message = message,
                 Data = data
             };
-        }    
+        }
 
+        internal static Response<T> CreateResponse<T>(bool v, string get, string message)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
