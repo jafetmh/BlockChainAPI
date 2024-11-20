@@ -15,6 +15,7 @@ namespace BlockChainAPI.Services.AppServices
 {
     public class BlockService : IBlockService
     {
+
         private readonly BlockChainContext _blockChainContext;
         private readonly IUserRepository _userRepository;
         private readonly IBlockRepository _blockRepository;
@@ -24,6 +25,7 @@ namespace BlockChainAPI.Services.AppServices
         private readonly IMemPoolDocumentService _memPoolDocumentService;
         private readonly IAESEncryption _encryption;
         private readonly IConfigurationRepository _configurationRepository;
+        private readonly ILogService _logService;   
         private readonly Message _message;
 
         public BlockService(BlockChainContext blockChainContext,
@@ -35,6 +37,7 @@ namespace BlockChainAPI.Services.AppServices
                             IMemPoolDocumentService memPoolDocumentService,
                             IAESEncryption encryption,
                             IConfigurationRepository configurationRepository,
+                            ILogService logService,
                             MessageService messages) {
             _blockChainContext = blockChainContext;
             _userRepository = userRepository;
@@ -44,7 +47,9 @@ namespace BlockChainAPI.Services.AppServices
             _documentService = documentService;
             _memPoolDocumentService = memPoolDocumentService;
             _encryption = encryption;
+            _logService = logService;
             _configurationRepository = configurationRepository;
+            
             _message = messages.Get_Message();
         }
 
@@ -57,7 +62,6 @@ namespace BlockChainAPI.Services.AppServices
 
         public async Task<Response<Block>> BuildBlock(int userId, List<MemPoolDocument> documents)
         {
-            var transaction = await _blockChainContext.Database.BeginTransactionAsync();
             try
             {
                 List<MemPoolDocument> documentsToMine = await _memPoolDocumentService.FilterMemPoolDocument(userId ,documents);
@@ -79,12 +83,11 @@ namespace BlockChainAPI.Services.AppServices
                 if (entriesWriten <= 0) { return ResponseResult.CreateResponse<Block>(false, _message.Failure.Set); }
                 List<Document> documentsTocreate = documentsToMine.Select(Document.FromMempoolDocument).ToList();
                 await _documentService.BulkCreateDocuments(user, documentsTocreate, block);
-                await transaction.CommitAsync();
+                await _logService.Log(_message.LogMessages.CreateBlock, user.Name, new { data = block});
                 return ResponseResult.CreateResponse(true, _message.Success.Set, block);
             }
             catch(Exception ex)
             {
-                await transaction.RollbackAsync();
                 return ResponseResult.CreateResponse<Block>(false, _message.Failure.Set);
             }
 

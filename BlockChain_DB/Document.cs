@@ -6,7 +6,6 @@ namespace BlockChain_DB
 {
     public class Document
     {
-
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int Id { get; set; }
 
