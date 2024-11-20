@@ -182,7 +182,6 @@ namespace BlockChainAPI.Services.AppServices
                 }
             }
             return changedBlocks;
-
         }
 
         public async Task DecryptDocuments(List<Document> documents)

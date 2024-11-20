@@ -37,71 +37,7 @@ namespace BlockChainAPI.Controllers
             return Ok(responseResult);
         }
 
-        // Verificar la consistencia de los hashes entre los bloques
-        [Authorize]
-        [HttpGet("verify-hash-consistency/{userId}")]
-        public async Task<ActionResult> VerifyHashConsistency(int userId)
-        {
-            try
-            {
-                Response<BlockResponse> responseResult = await _blockService.GetBlocks(userId);
-                if (!responseResult.Success) return StatusCode(500, responseResult);
-
-                List<Block> inconsistentBlocks = _blockService.VerifyBlockHashesConsistency(responseResult.Data.Blocks);
-
-                return Ok(new
-                {
-                    Success = true,
-                    Message = inconsistentBlocks.Count > 0 ? "Inconsistent hashes found" : "All hashes are consistent",
-                    Data = inconsistentBlocks
-                });
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new { Success = false, Message = ex.Message });
-            }
-        }
-
-        // Verificar la integridad de los bloques
-        [Authorize]
-        [HttpGet("verify-block-integrity/{userId}")]
-        public async Task<ActionResult> VerifyBlockIntegrity(int userId)
-        {
-            try
-            {
-                Response<BlockResponse> responseResult = await _blockService.GetBlocks(userId);
-                if (!responseResult.Success) return StatusCode(500, responseResult);
-
-                List<Block> alteredBlocks = await _blockService.VerifyBlockIntegrity(responseResult.Data.Blocks);
-
-                return Ok(new
-                {
-                    Success = true,
-                    Message = alteredBlocks.Count > 0 ? "Altered blocks found" : "All blocks are intact",
-                    Data = alteredBlocks
-                });
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new { Success = false, Message = ex.Message });
-            }
-        }
-
-        // Desencriptar documentos de un bloque
-        [Authorize]
-        [HttpPost("decrypt-documents")]
-        public async Task<ActionResult> DecryptDocuments([FromBody] List<Document> documents)
-        {
-            try
-            {
-                await _blockService.DecryptDocuments(documents);
-                return Ok(new { Success = true, Message = "Documents decrypted successfully", Data = documents });
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new { Success = false, Message = ex.Message });
-            }
-        }
+        
 
     }
 }
