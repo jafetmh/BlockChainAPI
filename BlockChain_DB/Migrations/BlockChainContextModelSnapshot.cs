@@ -147,7 +147,7 @@ namespace BlockChain_DB.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("MemPoolID")
+                    b.Property<int?>("MemPoolID")
                         .HasColumnType("int");
 
                     b.Property<string>("Owner")
@@ -156,6 +156,9 @@ namespace BlockChain_DB.Migrations
 
                     b.Property<long>("Size")
                         .HasColumnType("bigint");
+
+                    b.Property<bool>("isMined")
+                        .HasColumnType("bit");
 
                     b.HasKey("Id");
 
@@ -183,6 +186,32 @@ namespace BlockChain_DB.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("system_configs", (string)null);
+                });
+
+            modelBuilder.Entity("BlockChain_DB.SystemLog", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Action")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Details")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("Timestamp")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("User")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("systemlog", (string)null);
                 });
 
             modelBuilder.Entity("BlockChain_DB.User", b =>
@@ -272,9 +301,7 @@ namespace BlockChain_DB.Migrations
                 {
                     b.HasOne("BlockChain_DB.MemPool", "MemPool")
                         .WithMany("Documents")
-                        .HasForeignKey("MemPoolID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("MemPoolID");
 
                     b.Navigation("MemPool");
                 });

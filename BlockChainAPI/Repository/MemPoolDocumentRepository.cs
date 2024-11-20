@@ -19,28 +19,19 @@ namespace BlockChainAPI.Repository
         }
 
         //Get all user mempool docs
-        public async Task<Response<List<DocumentDTO>>> GetMempoolDocuments(int userId)
+        public async Task<Response<List<MemPoolDocument>>> GetMempoolDocuments(int userId)
         {
 
-            List<DocumentDTO> documents = new List<DocumentDTO>();
+            List<MemPoolDocument> documents = new();
             try
             {
                 Response<MemPool> result = await _mempoolRepository.GetMempool(userId);
                 MemPool memPool = result.Data;
                 if (memPool == null)
                 {
-                    return ResponseResult.CreateResponse<List<DocumentDTO>>(false, _message.NotFound);
+                    return ResponseResult.CreateResponse<List<MemPoolDocument>>(false, _message.NotFound);
                 }
-                documents = memPool.Documents
-                        .Select(doc => new DocumentDTO
-                        {
-                            Id = doc.Id,
-                            Owner = doc.Owner,
-                            FileType = doc.FileType,
-                            CreationDate = doc.CreationDate,
-                            Size = doc.Size,
-                            Doc_encode = doc.Doc_encode,
-                        }).ToList();
+                documents = memPool.Documents.ToList();
 
                 return ResponseResult.CreateResponse(true, _message.Success.Get, documents);
             }
@@ -83,19 +74,11 @@ namespace BlockChainAPI.Repository
             {
                 // Obtener el mempool del usuario
                 Response<MemPool> result = await _mempoolRepository.GetMempool(userId);
-                if (!result.Success)
-                {
-                    return ResponseResult.CreateResponse<List<DocumentDTO>>(false, _message.Failure.Get);
-                }
-
+                if (!result.Success) return ResponseResult.CreateResponse<List<DocumentDTO>>(false, _message.Failure.Get);
                 MemPool memPool = result.Data;
-                if (memPool == null)
-                {
-                    return ResponseResult.CreateResponse<List<DocumentDTO>>(false, _message.NotFound);
-                }
 
                 // Filtrar los documentos por los IDs proporcionados
-                var documents = memPool.Documents
+                List<DocumentDTO> documents = memPool.Documents
                     .Where(doc => documentIds.Contains(doc.Id))
                     .Select(doc => new DocumentDTO
                     {

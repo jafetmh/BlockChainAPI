@@ -100,7 +100,6 @@ namespace BlockChainAPI.Repository
                             Name = user.Name,
                             LastName = user.LastName,
                             Email = user.Email,
-                            Password = user.Password,
                         };
                         return ResponseResult.CreateResponse(true, message.Success.Get, userDTO);
                     }

@@ -9,5 +9,7 @@
         public string InvalidMaxDocuments { get; set; }
         public string ChainInconsistency { get; set; }
         public string CorruptedBlocks { get; set; }
+        public LogMessages LogMessages { get; set; }
+        public string RepeatedDocument {  get; set; }
     }
 }

@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Text.Json.Serialization;
 
 namespace BlockChain_DB
 {
@@ -24,23 +20,14 @@ namespace BlockChain_DB
 
         public string Doc_encode { get; set; }
 
-        public int MemPoolID { get; set; }
+        [JsonIgnore]
+        public int? MemPoolID { get; set; }
 
+        public bool isMined { get; set; }
+
+        [JsonIgnore]
         [ForeignKey(nameof(MemPoolID))]
         public virtual MemPool? MemPool { get; set; }
 
-        //convert to MemPoolDocument
-        public static MemPoolDocument FromDocument(Document document)
-        {
-            return new MemPoolDocument
-            {
-                Id = document.Id,
-                Owner = document.Owner,
-                FileType = document.FileType,
-                CreationDate = document.CreationDate,
-                Size = document.Size,
-                Doc_encode = document.Doc_encode
-            };
-        }
     }
 }

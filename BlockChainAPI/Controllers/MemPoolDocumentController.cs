@@ -98,8 +98,6 @@ namespace BlockChainAPI.Controllers
                 doc.FileType,
                 doc.Doc_encode
             }).ToList();
-
-            // Devolver la respuesta con los documentos solicitados
             return Ok(documentResponses);
         }
     }

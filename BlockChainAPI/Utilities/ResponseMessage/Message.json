@@ -15,5 +15,11 @@
   "InvalidCredential": "Credenciales inválidas",
   "InvalidMaxDocuments": "Cantidad de documentos supera lo establecido por configuración del sistema.",
   "ChainInconsistency": "Se ha encontrado incosistencia en la cadena de bloques.",
-  "CorruptedBlocks": "Bloques corrompidos."
+  "CorruptedBlocks": "Bloques corrompidos.",
+  "LogMessages": {
+    "UploadDocument": "Carga de documentos.",
+    "CreateBlock": "Creación de bloques.",
+    "ChainValidation": "Validación de la cadena de bloques."
+  },
+  "RepeatedDocument": "Estos documentos ya fueron minados en otra construcción de bloque." 
 }

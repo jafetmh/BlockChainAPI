@@ -14,6 +14,7 @@ namespace BlockChain_DB
         public virtual DbSet<MemPool> MemPools { get; set; }
         public virtual DbSet<MemPoolDocument> MemPoolDocuments { get; set; }
         public virtual DbSet<SystemConfig> SystemConfig { get; set; }
+        public virtual DbSet<SystemLog> SystemLog { get; set; }
 
         //Set custom database table name
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -25,6 +26,7 @@ namespace BlockChain_DB
             modelBuilder.Entity<MemPool>().ToTable("mempools");
             modelBuilder.Entity<MemPoolDocument>().ToTable("mempool_documents");
             modelBuilder.Entity<SystemConfig>().ToTable("system_configs");
+            modelBuilder.Entity<SystemLog>().ToTable("systemlog");
 
         }
     }
