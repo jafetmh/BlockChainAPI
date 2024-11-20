@@ -25,5 +25,19 @@ namespace BlockChain_DB
         [JsonIgnore]
         [ForeignKey(nameof(BlockID))]
         public virtual Block? Block { get; set; }
+
+        //convert to Document
+        public static Document FromMempoolDocument(MemPoolDocument document)
+        {
+            return new Document
+            {
+                Id = document.Id,
+                Owner = document.Owner,
+                FileType = document.FileType,
+                CreationDate = document.CreationDate,
+                Size = document.Size,
+                Doc_encode = document.Doc_encode
+            };
+        }
     }
 }

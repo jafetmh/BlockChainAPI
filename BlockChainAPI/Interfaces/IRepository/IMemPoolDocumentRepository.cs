@@ -6,7 +6,7 @@ namespace BlockChainAPI.Interfaces.IRepository
 {
     public interface IMemPoolDocumentRepository
     {
-        Task<Response<List<DocumentDTO>>> GetMempoolDocuments(int userId);
+        Task<Response<List<MemPoolDocument>>> GetMempoolDocuments(int userId);
         Task<Response<DocumentDTO>> GetMempoolDocumentById(int userId, int documentId);
 
     }

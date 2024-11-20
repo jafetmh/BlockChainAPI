@@ -36,6 +36,7 @@ namespace BlockChainAPI
             services.AddScoped<ISHA256Hash, SHA256Hash>();
             services.AddTransient<IAuthService, AuthService>();
             services.AddScoped<IAESEncryption, AESEncryption>();
+            services.AddScoped<ILogService, LogService>();
             services.AddTransient<MessageService>();
             return services;
         }

@@ -8,7 +8,6 @@ namespace BlockChain_DB
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
-
         public int UserID { get; set; }
 
         [ForeignKey(nameof(UserID))]

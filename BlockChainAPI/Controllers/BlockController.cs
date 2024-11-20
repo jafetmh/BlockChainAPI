@@ -28,10 +28,9 @@ namespace BlockChainAPI.Controllers
             return Ok(responseResult);
         }
 
-        // Crear un nuevo bloque mediante minería
         [Authorize]
         [HttpPost("{userId}")]
-        public async Task<ActionResult> CreateBlock(int userId, [FromBody] List<Document> documents)
+        public async Task<ActionResult> CreateBlock(int userId, [FromBody] List<MemPoolDocument> documents)
         {
             Response<Block> responseResult = await _blockService.StartMiningTask(userId, documents);
             if (!responseResult.Success) { return StatusCode(500, responseResult); }
@@ -104,20 +103,5 @@ namespace BlockChainAPI.Controllers
             }
         }
 
-        // Obtener cadena base64 de los documentos
-        [Authorize]
-        [HttpPost("get-docs-base64")]
-        public ActionResult GetDocsBase64([FromBody] List<Document> documents)
-        {
-            try
-            {
-                string base64String = _blockService.GetDocsBase64tring(documents);
-                return Ok(new { Success = true, Data = base64String });
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new { Success = false, Message = ex.Message });
-            }
-        }
     }
 }

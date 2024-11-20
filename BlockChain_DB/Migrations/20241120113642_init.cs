@@ -26,6 +26,22 @@ namespace BlockChain_DB.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "systemlog",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Action = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    User = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Timestamp = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Details = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_systemlog", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "users",
                 columns: table => new
                 {
@@ -116,7 +132,8 @@ namespace BlockChain_DB.Migrations
                     CreationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Size = table.Column<long>(type: "bigint", nullable: false),
                     Doc_encode = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    MemPoolID = table.Column<int>(type: "int", nullable: false)
+                    MemPoolID = table.Column<int>(type: "int", nullable: true),
+                    isMined = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -125,8 +142,7 @@ namespace BlockChain_DB.Migrations
                         name: "FK_mempool_documents_mempools_MemPoolID",
                         column: x => x.MemPoolID,
                         principalTable: "mempools",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -143,6 +159,7 @@ namespace BlockChain_DB.Migrations
                 },
                 constraints: table =>
                 {
+                    table.PrimaryKey("PK_documents", x => x.Id);
                     table.ForeignKey(
                         name: "FK_documents_blocks_BlockID",
                         column: x => x.BlockID,
@@ -190,6 +207,9 @@ namespace BlockChain_DB.Migrations
 
             migrationBuilder.DropTable(
                 name: "system_configs");
+
+            migrationBuilder.DropTable(
+                name: "systemlog");
 
             migrationBuilder.DropTable(
                 name: "blocks");
