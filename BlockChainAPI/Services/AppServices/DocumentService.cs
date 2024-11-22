@@ -5,6 +5,7 @@ using BlockChainAPI.Interfaces.IDataService;
 using BlockChainAPI.Interfaces.IRepository;
 using BlockChainAPI.Interfaces.IServices.IAppServices;
 using BlockChainAPI.Interfaces.IServices.ICrypto.AES;
+using BlockChainAPI.Interfaces.IServices.Utilities;
 using BlockChainAPI.Utilities;
 using BlockChainAPI.Utilities.ResponseMessage;
 
@@ -19,7 +20,7 @@ namespace BlockChainAPI.Services.AppServices
         public DocumentService(IGenericDocumentRepository<Document> documentRespository,
                                IAESEncryption encryption,
                                IDocumentRepository documentRepository1,
-                               MessageService message)
+                               IMessageService message)
         {
             _documentRepository = documentRespository;
             _encryption = encryption;

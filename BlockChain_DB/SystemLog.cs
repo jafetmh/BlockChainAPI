@@ -10,7 +10,7 @@ namespace BlockChain_DB
         public int Id { get; set; }
         public string Action { get; set; }
         public string? User { get; set; }
-        public DateTime Timestamp { get; set; } = DateTime.UtcNow;
+        public DateTime Timestamp { get; set; } = DateTime.UtcNow.AddHours(-6);
         public string? Details { get; set; }
     }
 }

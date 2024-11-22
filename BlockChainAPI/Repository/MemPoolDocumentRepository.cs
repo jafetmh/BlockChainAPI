@@ -5,6 +5,7 @@ using BlockChainAPI.Interfaces.IRepository;
 using BlockChainAPI.Utilities;
 using BlockChain_DB.Response;
 using BlockChainAPI.Utilities.ResponseMessage;
+using BlockChainAPI.Interfaces.IServices.Utilities;
 
 namespace BlockChainAPI.Repository
 {
@@ -13,7 +14,7 @@ namespace BlockChainAPI.Repository
         private readonly IMempoolRepository _mempoolRepository;
         private readonly Message _message;
 
-        public MemPoolDocumentRepository(IMempoolRepository mempoolRepository, MessageService message) { 
+        public MemPoolDocumentRepository(IMempoolRepository mempoolRepository, IMessageService message) { 
             _mempoolRepository = mempoolRepository;
             _message = message.Get_Message();
         }
