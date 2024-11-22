@@ -5,5 +5,6 @@
         public string UploadDocument {  get; set; }
         public string CreateBlock { get; set; }
         public string ChainValidation {  get; set; }
+        public string AlteredBlocks { get; set; }
     } 
 }

@@ -7,6 +7,7 @@ using BlockChainAPI.Interfaces.IRepository;
 using BlockChainAPI.Interfaces.IServices.IAppServices;
 using BlockChainAPI.Interfaces.IServices.ICrypto.AES;
 using BlockChainAPI.Interfaces.IServices.ICrypto.SHA256;
+using BlockChainAPI.Interfaces.IServices.Utilities;
 using BlockChainAPI.Utilities;
 using BlockChainAPI.Utilities.ResponseMessage;
 using System.Diagnostics;
@@ -15,8 +16,6 @@ namespace BlockChainAPI.Services.AppServices
 {
     public class BlockService : IBlockService
     {
-
-        private readonly BlockChainContext _blockChainContext;
         private readonly IUserRepository _userRepository;
         private readonly IBlockRepository _blockRepository;
         private readonly ISHA256Hash _sha256Hash;
@@ -28,8 +27,7 @@ namespace BlockChainAPI.Services.AppServices
         private readonly ILogService _logService;   
         private readonly Message _message;
 
-        public BlockService(BlockChainContext blockChainContext,
-                            IUserRepository userRepository,
+        public BlockService(IUserRepository userRepository,
                             IBlockRepository blockRepository,
                             ISHA256Hash sha256Hash, 
                             IChainRepository chainRepository,
@@ -38,8 +36,7 @@ namespace BlockChainAPI.Services.AppServices
                             IAESEncryption encryption,
                             IConfigurationRepository configurationRepository,
                             ILogService logService,
-                            MessageService messages) {
-            _blockChainContext = blockChainContext;
+                            IMessageService messages) {
             _userRepository = userRepository;
             _blockRepository = blockRepository;
             _sha256Hash = sha256Hash;
@@ -57,6 +54,7 @@ namespace BlockChainAPI.Services.AppServices
         {
             Response<SystemConfig> sysconfig = await _configurationRepository.GetMaxBlockDocuments();
             if (documents.Count > int.Parse(sysconfig.Data.Value)) return ResponseResult.CreateResponse<Block>(false, _message.InvalidMaxDocuments);
+            Console.WriteLine("Proceso de mineria comenzo");
             return await Task.Run(() => BuildBlock(userId, documents));
         }
 
@@ -121,6 +119,7 @@ namespace BlockChainAPI.Services.AppServices
                     block.MiningDate = currentTime;
                     block.Attempts = 0;
                 }
+                Thread.Sleep(1);
             }
             stopwatch.Stop();
             Console.WriteLine($"Tiempo de minado: {stopwatch.Elapsed}");
@@ -136,7 +135,10 @@ namespace BlockChainAPI.Services.AppServices
                 Response<User> user = await _userRepository.GetUser(userId);
                 _encryption.GetKeyAndIv(user.Data);
                 List<Block> incosistentBlocks = VerifyBlockHashesConsistency(blocks.Data);
+                if (incosistentBlocks.Count > 0) _logService.Log(_message.LogMessages.ChainValidation, user.Data.Name, new { data = incosistentBlocks });
                 List<Block> alteredBlocks = await VerifyBlockIntegrity(blocks.Data);
+                if (incosistentBlocks.Count > 0) _logService.Log(_message.LogMessages.AlteredBlocks, user.Data.Name, new { data = alteredBlocks });
+
                 BlockResponse response = new ()
                 {
                     Blocks = blocks.Data,

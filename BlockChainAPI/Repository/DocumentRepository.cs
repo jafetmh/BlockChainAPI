@@ -15,11 +15,7 @@ namespace BlockChainAPI.Repository
 
         public async Task BulkCreateDocuments(List<Document> documents)
         {
-            if (documents == null || !documents.Any())
-            {
-                Console.WriteLine("No hay documentos para insertar");
-                return;
-            }
+            if (documents == null || !documents.Any()) return;
 
             try
             {
@@ -28,7 +24,7 @@ namespace BlockChainAPI.Repository
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error al insertar documentos: {ex.Message}");
+                throw;
             }
         }
 
