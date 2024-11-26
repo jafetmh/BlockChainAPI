@@ -54,7 +54,6 @@ namespace BlockChainAPI.Services.AppServices
         {
             Response<SystemConfig> sysconfig = await _configurationRepository.GetMaxBlockDocuments();
             if (documents.Count > int.Parse(sysconfig.Data.Value)) return ResponseResult.CreateResponse<Block>(false, _message.InvalidMaxDocuments);
-            Console.WriteLine("Proceso de mineria comenzo");
             return await Task.Run(() => BuildBlock(userId, documents));
         }
 
@@ -109,7 +108,6 @@ namespace BlockChainAPI.Services.AppServices
                     isMined = true;
                     block.Hash = hash;
                     block.Milliseconds = (int)(DateTime.Now - miningStartDate).TotalMilliseconds;
-                    break;
                 }
                 block.Attempts++;
                 DateTime currentTime = DateTime.Now;
@@ -119,7 +117,6 @@ namespace BlockChainAPI.Services.AppServices
                     block.MiningDate = currentTime;
                     block.Attempts = 0;
                 }
-                Thread.Sleep(1);
             }
             stopwatch.Stop();
             Console.WriteLine($"Tiempo de minado: {stopwatch.Elapsed}");
@@ -135,9 +132,9 @@ namespace BlockChainAPI.Services.AppServices
                 Response<User> user = await _userRepository.GetUser(userId);
                 _encryption.GetKeyAndIv(user.Data);
                 List<Block> incosistentBlocks = VerifyBlockHashesConsistency(blocks.Data);
-                if (incosistentBlocks.Count > 0) _logService.Log(_message.LogMessages.ChainValidation, user.Data.Name, new { data = incosistentBlocks });
+                if (incosistentBlocks.Count > 0) await _logService.Log(_message.LogMessages.ChainValidation, user.Data.Name, new { data = incosistentBlocks });
                 List<Block> alteredBlocks = await VerifyBlockIntegrity(blocks.Data);
-                if (incosistentBlocks.Count > 0) _logService.Log(_message.LogMessages.AlteredBlocks, user.Data.Name, new { data = alteredBlocks });
+                if (incosistentBlocks.Count > 0) await _logService.Log(_message.LogMessages.AlteredBlocks, user.Data.Name, new { data = alteredBlocks });
 
                 BlockResponse response = new ()
                 {
