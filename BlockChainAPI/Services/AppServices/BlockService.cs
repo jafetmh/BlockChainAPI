@@ -142,14 +142,12 @@ namespace BlockChainAPI.Services.AppServices
                     Blocks = blocks.Data,
                     InconsistentBlocks = incosistentBlocks.Count != 0? incosistentBlocks: null,
                     AlteredBlocks = alteredBlocks.Count != 0? alteredBlocks: null
-
                 };
                 return ResponseResult.CreateResponse(true, _message.Success.Get, response);
             }
             catch (Exception ex) { 
                 return ResponseResult.CreateResponse<BlockResponse>(false, ex.Message); 
             }
-
         }
 
         public List<Block> VerifyBlockHashesConsistency(List<Block> blocks)
