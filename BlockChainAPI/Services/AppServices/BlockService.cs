@@ -127,18 +127,23 @@ namespace BlockChainAPI.Services.AppServices
         {
             try
             {
-                Response<List<Block>> blocks = await _blockRepository.GetBlocks(userId);
-                if (!blocks.Success | blocks.Data.Count == 0) return ResponseResult.CreateResponse<BlockResponse>(false, _message.NotFound);
+                Response<List<Block>> responseResult = await _blockRepository.GetBlocks(userId);
+                var blocks = responseResult.Data?? new List<Block>();
+
+                if (!responseResult.Success || !blocks.Any())
+                {
+                    return ResponseResult.CreateResponse<BlockResponse>(false, _message.NotFound);
+                }
                 Response<User> user = await _userRepository.GetUser(userId);
                 _encryption.GetKeyAndIv(user.Data);
-                List<Block> incosistentBlocks = VerifyBlockHashesConsistency(blocks.Data);
+                List<Block> incosistentBlocks = VerifyBlockHashesConsistency(responseResult.Data);
                 if (incosistentBlocks.Count > 0) await _logService.Log(_message.LogMessages.ChainValidation, user.Data.Name, new { data = incosistentBlocks });
-                List<Block> alteredBlocks = await VerifyBlockIntegrity(blocks.Data);
+                List<Block> alteredBlocks = await VerifyBlockIntegrity(responseResult.Data);
                 if (incosistentBlocks.Count > 0) await _logService.Log(_message.LogMessages.AlteredBlocks, user.Data.Name, new { data = alteredBlocks });
 
                 BlockResponse response = new ()
                 {
-                    Blocks = blocks.Data,
+                    Blocks = responseResult.Data,
                     InconsistentBlocks = incosistentBlocks.Count != 0? incosistentBlocks: null,
                     AlteredBlocks = alteredBlocks.Count != 0? alteredBlocks: null
 

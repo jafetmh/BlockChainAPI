@@ -79,7 +79,7 @@ namespace BlockChainAPI.Controllers
         [HttpGet("{userId}/documents/zip")]
         public async Task<ActionResult> GetDocumentsByIds(int userId, [FromQuery] List<int> documentIds)
         {
-            if (documentIds == null || !documentIds.Any())
+            if (documentIds == null || documentIds.Count <= 0)
                 return BadRequest("Debe seleccionar al menos un documento.");
 
             // Obtener los documentos por ID
