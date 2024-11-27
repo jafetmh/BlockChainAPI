@@ -37,6 +37,10 @@ namespace BlockChainAPI.Controllers
             return Ok(responseResult);
         }
 
+<<<<<<< HEAD
+=======
+        
+>>>>>>> b0660202c99fb3c5cc68d6964e476e8c6077a451
 
     }
 }

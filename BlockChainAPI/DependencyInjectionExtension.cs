@@ -10,6 +10,7 @@ using BlockChainAPI.Interfaces.IServices.ICrypto.AES;
 using BlockChainAPI.Services.Crypto.AES;
 using BlockChainAPI.Interfaces.IServices.ICrypto.SHA256;
 using BlockChainAPI.Services.Crypto.SHA_256;
+using BlockChainAPI.Interfaces.IServices.Utilities;
 
 namespace BlockChainAPI
 {
@@ -24,6 +25,7 @@ namespace BlockChainAPI
             services.AddScoped<IChainRepository, ChainRepository>();
             services.AddScoped<IMemPoolDocumentRepository, MemPoolDocumentRepository>();
             services.AddScoped<IMempoolRepository, MempoolRepository>();
+            services.AddScoped<IDocumentRepository, DocumentRepository>();
             services.AddScoped(typeof(IGenericDocumentRepository<>), typeof(GenericDocumentRepository<>));
             return services;
         }
@@ -37,7 +39,7 @@ namespace BlockChainAPI
             services.AddTransient<IAuthService, AuthService>();
             services.AddScoped<IAESEncryption, AESEncryption>();
             services.AddScoped<ILogService, LogService>();
-            services.AddTransient<MessageService>();
+            services.AddTransient<IMessageService, MessageService>();
             return services;
         }
     }

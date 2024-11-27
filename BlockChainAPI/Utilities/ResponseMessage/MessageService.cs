@@ -1,10 +1,12 @@
 ﻿using BlockChain_DB.General.Message;
+using BlockChainAPI.Interfaces.IServices.Utilities;
 using System.Text.Json;
 
 namespace BlockChainAPI.Utilities.ResponseMessage
 {
-    public class MessageService
+    public class MessageService: IMessageService
     {
+
         public Message Get_Message()
         {
             // Obtener la ruta base del directorio actual de la aplicación

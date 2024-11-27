@@ -7,6 +7,7 @@ using BlockChainAPI.Interfaces.IRepository;
 using BlockChainAPI.Interfaces.IServices.IAppServices;
 using BlockChainAPI.Interfaces.IServices.ICrypto.AES;
 using BlockChainAPI.Interfaces.IServices.ICrypto.SHA256;
+using BlockChainAPI.Interfaces.IServices.Utilities;
 using BlockChainAPI.Utilities;
 using BlockChainAPI.Utilities.ResponseMessage;
 using System.Diagnostics;
@@ -15,7 +16,6 @@ namespace BlockChainAPI.Services.AppServices
 {
     public class BlockService : IBlockService
     {
-        private readonly BlockChainContext _blockChainContext;
         private readonly IUserRepository _userRepository;
         private readonly IBlockRepository _blockRepository;
         private readonly ISHA256Hash _sha256Hash;
@@ -24,10 +24,10 @@ namespace BlockChainAPI.Services.AppServices
         private readonly IMemPoolDocumentService _memPoolDocumentService;
         private readonly IAESEncryption _encryption;
         private readonly IConfigurationRepository _configurationRepository;
+        private readonly ILogService _logService;   
         private readonly Message _message;
 
-        public BlockService(BlockChainContext blockChainContext,
-                            IUserRepository userRepository,
+        public BlockService(IUserRepository userRepository,
                             IBlockRepository blockRepository,
                             ISHA256Hash sha256Hash, 
                             IChainRepository chainRepository,
@@ -35,8 +35,8 @@ namespace BlockChainAPI.Services.AppServices
                             IMemPoolDocumentService memPoolDocumentService,
                             IAESEncryption encryption,
                             IConfigurationRepository configurationRepository,
-                            MessageService messages) {
-            _blockChainContext = blockChainContext;
+                            ILogService logService,
+                            IMessageService messages) {
             _userRepository = userRepository;
             _blockRepository = blockRepository;
             _sha256Hash = sha256Hash;
@@ -44,7 +44,9 @@ namespace BlockChainAPI.Services.AppServices
             _documentService = documentService;
             _memPoolDocumentService = memPoolDocumentService;
             _encryption = encryption;
+            _logService = logService;
             _configurationRepository = configurationRepository;
+            
             _message = messages.Get_Message();
         }
 
@@ -57,7 +59,6 @@ namespace BlockChainAPI.Services.AppServices
 
         public async Task<Response<Block>> BuildBlock(int userId, List<MemPoolDocument> documents)
         {
-            var transaction = await _blockChainContext.Database.BeginTransactionAsync();
             try
             {
                 List<MemPoolDocument> documentsToMine = await _memPoolDocumentService.FilterMemPoolDocument(userId ,documents);
@@ -79,12 +80,11 @@ namespace BlockChainAPI.Services.AppServices
                 if (entriesWriten <= 0) { return ResponseResult.CreateResponse<Block>(false, _message.Failure.Set); }
                 List<Document> documentsTocreate = documentsToMine.Select(Document.FromMempoolDocument).ToList();
                 await _documentService.BulkCreateDocuments(user, documentsTocreate, block);
-                await transaction.CommitAsync();
+                await _logService.Log(_message.LogMessages.CreateBlock, user.Name, new { data = block});
                 return ResponseResult.CreateResponse(true, _message.Success.Set, block);
             }
             catch(Exception ex)
             {
-                await transaction.RollbackAsync();
                 return ResponseResult.CreateResponse<Block>(false, _message.Failure.Set);
             }
 
@@ -108,7 +108,6 @@ namespace BlockChainAPI.Services.AppServices
                     isMined = true;
                     block.Hash = hash;
                     block.Milliseconds = (int)(DateTime.Now - miningStartDate).TotalMilliseconds;
-                    break;
                 }
                 block.Attempts++;
                 DateTime currentTime = DateTime.Now;
@@ -133,7 +132,10 @@ namespace BlockChainAPI.Services.AppServices
                 Response<User> user = await _userRepository.GetUser(userId);
                 _encryption.GetKeyAndIv(user.Data);
                 List<Block> incosistentBlocks = VerifyBlockHashesConsistency(blocks.Data);
+                if (incosistentBlocks.Count > 0) await _logService.Log(_message.LogMessages.ChainValidation, user.Data.Name, new { data = incosistentBlocks });
                 List<Block> alteredBlocks = await VerifyBlockIntegrity(blocks.Data);
+                if (incosistentBlocks.Count > 0) await _logService.Log(_message.LogMessages.AlteredBlocks, user.Data.Name, new { data = alteredBlocks });
+
                 BlockResponse response = new ()
                 {
                     Blocks = blocks.Data,
@@ -182,7 +184,6 @@ namespace BlockChainAPI.Services.AppServices
                 }
             }
             return changedBlocks;
-
         }
 
         public async Task DecryptDocuments(List<Document> documents)

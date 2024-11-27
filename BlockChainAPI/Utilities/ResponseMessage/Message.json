@@ -19,7 +19,8 @@
   "LogMessages": {
     "UploadDocument": "Carga de documentos.",
     "CreateBlock": "Creación de bloques.",
-    "ChainValidation": "Validación de la cadena de bloques."
+    "ChainValidation": "Inconsistencia en de la cadena de bloques.",
+    "AlteredBlocks":  "Bloques corrompidos."
   },
   "RepeatedDocument": "Estos documentos ya fueron minados en otra construcción de bloque." 
 }

@@ -25,6 +25,6 @@ namespace BlockChain_DB
         [JsonIgnore]
         public virtual Chain Chain { get; set; }
 
-        public virtual ICollection<Document> Documents { get; } = new List<Document>();
+        public virtual ICollection<Document> Documents { get; set; } = new List<Document>();
     }
 }

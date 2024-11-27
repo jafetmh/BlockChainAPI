@@ -2,8 +2,10 @@
 using BlockChain_DB.General.Message;
 using BlockChain_DB.Response;
 using BlockChainAPI.Interfaces.IDataService;
+using BlockChainAPI.Interfaces.IRepository;
 using BlockChainAPI.Interfaces.IServices.IAppServices;
 using BlockChainAPI.Interfaces.IServices.ICrypto.AES;
+using BlockChainAPI.Interfaces.IServices.Utilities;
 using BlockChainAPI.Utilities;
 using BlockChainAPI.Utilities.ResponseMessage;
 
@@ -13,13 +15,16 @@ namespace BlockChainAPI.Services.AppServices
     {
         private readonly IGenericDocumentRepository<Document> _documentRepository;
         private readonly IAESEncryption _encryption;
+        private readonly IDocumentRepository _documentRepository1;
         private readonly Message _message;
         public DocumentService(IGenericDocumentRepository<Document> documentRespository,
                                IAESEncryption encryption,
-                               MessageService message)
+                               IDocumentRepository documentRepository1,
+                               IMessageService message)
         {
             _documentRepository = documentRespository;
             _encryption = encryption;
+            _documentRepository1 = documentRepository1;
             _message = message.Get_Message();
         }
 
@@ -38,7 +43,8 @@ namespace BlockChainAPI.Services.AppServices
                     document.Doc_encode = await _encryption.EncryptDocument(document.Doc_encode);
                     id++;
                 }
-                return await _documentRepository.BulkCreateDocuments(documents);
+                 await _documentRepository1.BulkCreateDocuments(documents);
+                return ResponseResult.CreateResponse<Document>(true, default);
             }
             catch (Exception ex) {
                 return ResponseResult.CreateResponse<Document>(false, ex.Message);

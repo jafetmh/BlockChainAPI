@@ -1,5 +1,6 @@
 ﻿using BlockChain_DB;
 using BlockChainAPI.Interfaces.IServices.IAppServices;
+using System.Text.Json;
 
 namespace BlockChainAPI.Services.AppServices
 {
@@ -9,13 +10,13 @@ namespace BlockChainAPI.Services.AppServices
         public LogService(BlockChainContext context) { 
             _context = context;
         }
-        public async Task Log(string action, string user, string details = null)
+        public async Task Log(string action, string user, object details = null)
         {
             SystemLog newLog = new SystemLog()
             {
                 Action = action,
                 User = user,
-                Details = details
+                Details = details != null?JsonSerializer.Serialize(details) : null
             };
             _context.SystemLog.Add(newLog);
             await _context.SaveChangesAsync();
