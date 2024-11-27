@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using EFCore.BulkExtensions;
 using BlockChainAPI.Utilities.ResponseMessage;
 using BlockChain_DB.DTO;
+using BlockChainAPI.Interfaces.IServices.Utilities;
 
 namespace BlockChainAPI.Repository
 {
@@ -16,7 +17,7 @@ namespace BlockChainAPI.Repository
         private readonly DbSet<T> _dbSet;
         private readonly Message message;
 
-        public GenericDocumentRepository(BlockChainContext context, MessageService messages)
+        public GenericDocumentRepository(BlockChainContext context, IMessageService messages)
         {
             _context = context;
             _dbSet = _context.Set<T>(); //allow repo access to specific Entity

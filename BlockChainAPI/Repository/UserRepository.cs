@@ -4,6 +4,7 @@ using BlockChain_DB.General.Message;
 using BlockChain_DB.Response;
 using BlockChainAPI.Interfaces.IDataService;
 using BlockChainAPI.Interfaces.IServices.ICrypto.SHA256;
+using BlockChainAPI.Interfaces.IServices.Utilities;
 using BlockChainAPI.Utilities;
 using BlockChainAPI.Utilities.ResponseMessage;
 using Microsoft.EntityFrameworkCore;
@@ -17,7 +18,7 @@ namespace BlockChainAPI.Repository
         private readonly ISHA256Hash _hash;
         private readonly Message message;
 
-        public UserRepository(BlockChainContext context, ISHA256Hash hash, MessageService messages)
+        public UserRepository(BlockChainContext context, ISHA256Hash hash, IMessageService messages)
         {
             _context = context;
             _hash = hash;

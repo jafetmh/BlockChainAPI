@@ -3,6 +3,7 @@ using BlockChain_DB;
 using BlockChain_DB.General.Message;
 using BlockChain_DB.Response;
 using BlockChainAPI.Interfaces.IDataService;
+using BlockChainAPI.Interfaces.IServices.Utilities;
 using BlockChainAPI.Utilities;
 using BlockChainAPI.Utilities.ResponseMessage;
 using Microsoft.EntityFrameworkCore;
@@ -15,7 +16,7 @@ namespace BlockChainAPI.Repository
         private readonly Message message;
 
 
-        public ConfigurationRepository(BlockChainContext context, MessageService messages)
+        public ConfigurationRepository(BlockChainContext context, IMessageService messages)
         {
             _context = context;
             message = messages.Get_Message();

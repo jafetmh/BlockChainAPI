@@ -6,6 +6,7 @@ using BlockChain_DB.Response;
 using BlockChainAPI.Interfaces.IDataService;
 using BlockChainAPI.Interfaces.IRepository;
 using BlockChainAPI.Interfaces.IServices.IAppServices;
+using BlockChainAPI.Interfaces.IServices.Utilities;
 using BlockChainAPI.Utilities;
 using BlockChainAPI.Utilities.ResponseMessage;
 
@@ -26,7 +27,7 @@ namespace BlockChainAPI.Services.AppServices
                                         IMempoolRepository mempoolRepository,
                                         IMemPoolDocumentRepository memPoolDocumentRepository,
                                         IGenericDocumentRepository<MemPoolDocument> genericMemPoolDocumentRepository,
-                                        MessageService message)
+                                        IMessageService message)
         {
             _blockchainContext = context;
             _logService = logService;
