@@ -11,13 +11,10 @@ namespace BlockChainAPI.Controllers
     public class SystemLogController : ControllerBase
     {
         private readonly BlockChainContext _context;
-        private readonly ILogService _logService;
 
-
-        public SystemLogController(BlockChainContext context ,ILogService logService)
+        public SystemLogController(BlockChainContext context)
         {
             _context = context;
-            _logService = logService;
         }
 
         [HttpGet]

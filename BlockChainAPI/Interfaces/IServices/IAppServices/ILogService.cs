@@ -2,6 +2,6 @@
 {
     public interface ILogService
     {
-        Task Log(string action, string user, object details = null);
+        Task Log(string action, string user, object? details = default);
     }
 }
